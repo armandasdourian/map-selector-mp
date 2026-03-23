@@ -383,7 +383,6 @@ function renderResult(){
   if(room.system==='cs2Premier'){
     var sh='';if(s.side){var sl=s.side==='attack'?'ATTACKING':'DEFENDING';var sc=s.side==='attack'?'var(--red)':'var(--teal)';var stl=s.sidePickTeam==='a'?'Team A':'Team B';sh='<div style="margin-top:16px;padding:14px 20px;background:var(--panel);border:1px solid '+sc+';display:flex;align-items:center;justify-content:center;gap:14px;border-radius:4px"><span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim)">Starting Side</span><span style="font-size:20px;font-weight:900;letter-spacing:4px;color:'+sc+'">'+sl+'</span><span style="font-size:9px;color:var(--text-mute)">picked by '+stl+'</span></div>'}
     if(s.banned){d=sh+'<div class="res-hist"><h4>Ban History</h4>'+s.banned.map(function(b,i){var tm=pT(b.by);return '<div class="hi"><span style="width:24px;color:var(--text-mute);font-size:10px">'+(i+1)+'</span><span style="color:'+tC(tm)+';font-weight:700;font-size:11px;min-width:55px">'+tL(tm)+'</span><span>banned <strong>'+esc(b.map)+'</strong></span></div>'}).join('')+'</div>'}}
-  }
   var bb=h?'<div style="margin-top:28px"><button class="btn btn-lg btn-ghost" data-action="back-to-lobby">Return to Lobby</button></div>':'<div style="margin-top:28px;font-size:12px;color:var(--text-mute)">Waiting for host...</div>';
   return '<div class="res"><div class="res-tag">Map Selected \u00B7 '+sn.toUpperCase()+'</div><div class="res-card"><img src="/maps/'+encodeURIComponent(r)+'.png" alt="'+esc(r)+'"><div class="rn">'+esc(r)+'</div></div>'+d+bb+'</div>'
 }
