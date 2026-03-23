@@ -9,6 +9,11 @@ const io = new Server(httpServer);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Fallback: serve index.html for root
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 const MAPS = [
   'Ascent','Haven','Bind','Lotus','Split','Pearl',
   'Sunset','Breeze','Corrode','Abyss','Icebox','Fracture'
