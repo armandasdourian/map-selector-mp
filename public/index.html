@@ -572,34 +572,142 @@ function renderCurated(){
 }
 
 // -- CS2 PREMIER --
+// --- RADAR CHART ---
+function radarChart(ms,sz){
+  if(!ms)return '';
+  var axes=[
+    {l:'WR',v:ms.wr/100},
+    {l:'EXP',v:Math.min(ms.games/150,1)},
+    {l:'TEAM',v:ms.teamWr/100},
+    {l:'AGENT',v:(ms.agents&&ms.agents[0]?ms.agents[0].wr:50)/100},
+    {l:'FORM',v:Math.min(ms.recent/15,1)}
+  ];
+  var cx=sz/2,cy=sz/2,r=sz/2-16,n=axes.length;
+  var gridSvg='';
+  [0.25,0.5,0.75,1].forEach(function(sc){
+    var pts=[];
+    for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;pts.push((cx+r*sc*Math.cos(a)).toFixed(1)+','+(cy+r*sc*Math.sin(a)).toFixed(1));}
+    gridSvg+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="#ffffff08" stroke-width="0.5"/>';
+  });
+  var axLines='';
+  for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;axLines+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(a)).toFixed(1)+'" y2="'+(cy+r*Math.sin(a)).toFixed(1)+'" stroke="#ffffff0a" stroke-width="0.5"/>';}
+  var pts=[];
+  for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=Math.max(axes[i].v,0.05);pts.push((cx+r*v*Math.cos(a)).toFixed(1)+','+(cy+r*v*Math.sin(a)).toFixed(1));}
+  var labels='';
+  for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var lx=cx+(r+11)*Math.cos(a);var ly=cy+(r+11)*Math.sin(a);
+    labels+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="#8b8577" font-size="6" font-weight="700" font-family="Urbanist,sans-serif" letter-spacing="0.5">'+axes[i].l+'</text>';}
+  // Dots at vertices
+  var dots='';
+  for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=Math.max(axes[i].v,0.05);
+    dots+='<circle cx="'+(cx+r*v*Math.cos(a)).toFixed(1)+'" cy="'+(cy+r*v*Math.sin(a)).toFixed(1)+'" r="2" fill="var(--teal)"/>';}
+  return '<svg viewBox="0 0 '+sz+' '+sz+'" width="'+sz+'" height="'+sz+'" style="display:block;margin:0 auto;">'+
+    gridSvg+axLines+
+    '<polygon points="'+pts.join(' ')+'" fill="#17dec518" stroke="var(--teal)" stroke-width="1.5" stroke-linejoin="round"/>'+
+    dots+labels+'</svg>';
+}
+
 function renderCs2Premier(){
   var s=room.state;
   var pool=s.pool||[];
   var banned=s.banned||[];
   var banOrder=s.banOrder||[];
   var banIndex=s.banIndex||0;
+  var pPhase=s.premierPhase||'ban';
+  var st=myStats();
+  var level=nl();
+
+  // --- SIDE PICK PHASE ---
+  if(pPhase==='sidePick'&&s.result){
+    var isSidePicker=myId===s.sidePickCaptain;
+    var sidePickTeamLabel=s.sidePickTeam==='a'?'TEAM A':'TEAM B';
+    var ms=st?st[s.result]:null;
+    var radar=ms?radarChart(ms,140):'';
+    var sideButtons=isSidePicker
+      ?'<div style="display:flex;gap:12px;justify-content:center;margin-top:20px">'+
+        '<button class="btn btn-lg" data-action="pick-side" data-side="attack" style="background:var(--red);border-color:var(--red);color:#fff;min-width:160px;flex-direction:column;gap:4px;padding:18px 32px">'+
+          '<span style="font-size:15px;letter-spacing:3px">ATTACK</span><span style="font-size:8px;letter-spacing:1px;opacity:.7">START ON ATTACK SIDE</span></button>'+
+        '<button class="btn btn-lg" data-action="pick-side" data-side="defend" style="background:var(--teal);border-color:var(--teal);color:#000;min-width:160px;flex-direction:column;gap:4px;padding:18px 32px">'+
+          '<span style="font-size:15px;letter-spacing:3px">DEFEND</span><span style="font-size:8px;letter-spacing:1px;opacity:.5">START ON DEFEND SIDE</span></button>'+
+      '</div>'
+      :'<div style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-dim);animation:pulse 2s ease-in-out infinite">Waiting for '+sidePickTeamLabel+' captain to pick starting side...</div>';
+    // Ban history summary
+    var banSummary=banned.map(function(b,i){
+      var team=pTeam(b.by);var col=teamColor(team);
+      return '<span style="padding:3px 10px;font-size:10px;font-weight:700;text-decoration:line-through;color:'+col+';border:1px solid '+col+';opacity:.5;border-radius:2px">'+esc(b.map)+'</span>';
+    }).join('');
+    return '<div class="game-screen"><div class="game-header">'+
+      '<div class="game-system-name">SIDE SELECT</div>'+
+      '<div class="game-status">'+sidePickTeamLabel+' picks starting side</div></div>'+
+      '<div style="text-align:center;padding:20px 0">'+
+        '<div style="display:inline-block;width:360px;max-width:90vw;border:2px solid var(--gold);border-radius:6px;overflow:hidden;box-shadow:0 0 40px var(--gold-dim)">'+
+          '<img src="/maps/'+encodeURIComponent(s.result)+'.png" style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover">'+
+          '<div style="padding:14px;background:var(--panel)">'+
+            '<div style="font-family:var(--font-display);font-size:24px;font-weight:900;letter-spacing:3px;text-transform:uppercase">'+esc(s.result)+'</div>'+
+            '<div style="font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-top:4px">FINAL MAP</div>'+
+          '</div>'+
+        '</div>'+
+        (radar?'<div style="margin-top:16px">'+radar+'<div style="font-size:8px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-top:4px">YOUR STATS ON THIS MAP</div></div>':'')+
+      '</div>'+
+      sideButtons+
+      '<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:20px">'+banSummary+'</div>'+
+    '</div>';
+  }
+
+  // --- BAN PHASE ---
   var currentBanner=banOrder[banIndex];
   var isMyTurn=currentBanner===myId;
-  var seq=banOrder.map(function(id,i){
-    var team=pTeam(id);var cls,icon;
-    if(i<banIndex){cls='ban-step done team-'+team+'-s';icon='\u2713';}
-    else if(i===banIndex){cls='ban-step active-s team-'+team+'-s';icon=String(i+1);}
-    else{cls='ban-step future-s';icon=String(i+1);}
-    var conn=i<banOrder.length-1?'<div class="ban-conn '+(i<banIndex?'done':'')+'"></div>':'';
+
+  // Phase sequence with labels
+  var totalBans=banOrder.length;
+  var phaseDots='';
+  // Show: Ban 1, Ban 2, ... Ban N, Map, Side
+  var allPhases=[];
+  for(var i=0;i<totalBans;i++){
+    var team=pTeam(banOrder[i]);
+    allPhases.push({team:team,type:'ban',i:i});
+  }
+  allPhases.push({type:'map'});
+  allPhases.push({type:'side'});
+
+  var seq=allPhases.map(function(p,idx){
+    var cls,icon,label='';
+    if(p.type==='ban'){
+      if(p.i<banIndex){cls='ban-step done team-'+p.team+'-s';icon='\u2713';}
+      else if(p.i===banIndex){cls='ban-step active-s team-'+p.team+'-s';icon=String(p.i+1);}
+      else{cls='ban-step future-s';icon=String(p.i+1);}
+    }else if(p.type==='map'){
+      cls='ban-step future-s';icon='\u2691';
+      if(pPhase==='sidePick')cls='ban-step done team-a-s';
+    }else{
+      cls='ban-step future-s';icon='\u2694';
+    }
+    var conn=idx<allPhases.length-1?'<div class="ban-conn '+(p.type==='ban'&&p.i<banIndex?'done':'')+'"></div>':'';
     return '<div class="'+cls+'">'+icon+'</div>'+conn;
   }).join('');
+
   var turnHtml=isMyTurn
     ?'<div class="turn-banner your-turn">YOUR TURN \u2014 BAN A MAP</div>'
     :'<div class="turn-banner waiting">WAITING FOR '+esc(pName(currentBanner)).toUpperCase()+' TO BAN</div>';
+
+  // Map grid with radar charts
   var grid=pool.map(function(m){
     var ban=banned.find(function(b){return b.map===m;});
     if(ban)return mc(m,{banned:true,bannedBy:pName(ban.by),bannedByTeam:pTeam(ban.by)});
-    return mc(m,{action:isMyTurn?'ban-map':null,disabled:!isMyTurn});
+    // For unbanned cards in CS2 Premier, add radar chart
+    var ms=st?st[m]:null;
+    var radarHtml=(level>=1&&ms)?'<div style="padding:4px 10px 8px">'+radarChart(ms,100)+'</div>':'';
+    var cardHtml=mc(m,{action:isMyTurn?'ban-map':null,disabled:!isMyTurn});
+    // Inject radar before closing </div>
+    if(radarHtml){
+      cardHtml=cardHtml.slice(0,-6)+radarHtml+'</div>';
+    }
+    return cardHtml;
   }).join('');
+
   var remaining=pool.length-banned.length;
   return '<div class="game-screen"><div class="game-header">'+
     '<div class="game-system-name">CS2 PREMIER</div>'+
-    '<div class="game-status">Ban '+(banIndex+1)+' of '+banOrder.length+' \u00B7 '+remaining+' maps remaining</div></div>'+
+    '<div class="game-status">Ban '+(banIndex+1)+' of '+totalBans+' \u00B7 '+remaining+' maps remaining</div></div>'+
     nudgeBar()+'<div class="ban-sequence">'+seq+'</div>'+turnHtml+
     '<div class="map-grid">'+grid+'</div></div>';
 }
@@ -645,7 +753,17 @@ function renderResult(){
       }).join('')+'</div>';
   }
   if(room.system==='cs2Premier'&&s.banned){
-    detail='<div class="result-history"><h4>Ban History</h4>'+
+    var sideHtml='';
+    if(s.side){
+      var sideLabel=s.side==='attack'?'ATTACKING':'DEFENDING';
+      var sideCol=s.side==='attack'?'var(--red)':'var(--teal)';
+      var sideTeamLabel=s.sidePickTeam==='a'?'Team A':'Team B';
+      sideHtml='<div style="margin-top:12px;padding:12px 16px;background:var(--panel);border:1px solid '+sideCol+';display:flex;align-items:center;justify-content:center;gap:12px">'+
+        '<span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim)">Starting Side</span>'+
+        '<span style="font-size:18px;font-weight:900;letter-spacing:3px;color:'+sideCol+'">'+sideLabel+'</span>'+
+        '<span style="font-size:9px;color:var(--text-dim)">(picked by '+sideTeamLabel+')</span></div>';
+    }
+    detail=sideHtml+'<div class="result-history"><h4>Ban History</h4>'+
       s.banned.map(function(b,i){
         var team=pTeam(b.by);
         return '<div class="history-item"><span style="width:24px;color:var(--text-dim);font-size:10px">'+(i+1)+'</span>'+
@@ -726,6 +844,8 @@ document.getElementById('app').addEventListener('click',function(e){
       submitted=true;render();break;
     case 'ban-map':
       socket.emit('action',{action:'ban',map:el.dataset.map});break;
+    case 'pick-side':
+      socket.emit('action',{action:'pick-side',side:el.dataset.side});break;
     case 'vote-roulette':{
       var rm=el.dataset.map;
       localRoulette=rm;

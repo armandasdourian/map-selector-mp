@@ -294,7 +294,7 @@ io.on('connection', socket => {
         for (let i = 0; i < pool.length - 1; i++) {
           banOrder.push(i % 2 === 0 ? capA : capB);
         }
-        room.state = { pool, banned: [], banOrder, banIndex: 0, result: null };
+        room.state = { pool, banned: [], banOrder, banIndex: 0, result: null, premierPhase: 'ban', sidePickTeam: null, sidePickCaptain: null, side: null };
         break;
       }
 
@@ -338,13 +338,34 @@ io.on('connection', socket => {
         break;
 
       case 'cs2Premier':
-        if (data.action !== 'ban') return;
-        if (socket.id !== s.banOrder[s.banIndex]) return;
-        if (s.banned.some(b => b.map === data.map) || !s.pool.includes(data.map)) return;
-        s.banned.push({ map: data.map, by: socket.id });
-        s.banIndex++;
-        if (s.pool.filter(m => !s.banned.some(b => b.map === m)).length <= 1) {
-          s.result = s.pool.find(m => !s.banned.some(b => b.map === m));
+        if (data.action === 'ban' && s.premierPhase === 'ban') {
+          if (socket.id !== s.banOrder[s.banIndex]) return;
+          if (s.banned.some(b => b.map === data.map) || !s.pool.includes(data.map)) return;
+          s.banned.push({ map: data.map, by: socket.id });
+          s.banIndex++;
+          if (s.pool.filter(m => !s.banned.some(b => b.map === m)).length <= 1) {
+            s.result = s.pool.find(m => !s.banned.some(b => b.map === m));
+            s.premierPhase = 'sidePick';
+            // Team that didn't ban last gets side pick
+            const lastBanner = s.banOrder[s.banIndex - 1];
+            let lastBanTeam = 'a';
+            for (const [id, p] of room.players) {
+              if (id === lastBanner) { lastBanTeam = p.team; break; }
+            }
+            s.sidePickTeam = lastBanTeam === 'a' ? 'b' : 'a';
+            for (const [id, p] of room.players) {
+              if (p.team === s.sidePickTeam && p.isCaptain) {
+                s.sidePickCaptain = id;
+                break;
+              }
+            }
+          }
+        }
+        if (data.action === 'pick-side' && s.premierPhase === 'sidePick') {
+          if (socket.id !== s.sidePickCaptain) return;
+          if (data.side !== 'attack' && data.side !== 'defend') return;
+          s.side = data.side;
+          s.premierPhase = 'done';
           room.phase = 'result';
         }
         break;
