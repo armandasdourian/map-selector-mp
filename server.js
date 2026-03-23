@@ -95,20 +95,25 @@ function generatePlayerStats() {
 
     if (wr > bestWr) { bestWr = wr; bestMap = map; }
 
+    // KDA should correlate with WR: high WR = high KDA, low WR = low KDA
+    const kdBase = wr >= 55 ? 1.1 : wr >= 45 ? 0.9 : 0.7;
+
     stats[map] = {
       wr,
       games,
       teamWr: Math.max(28, Math.min(72, wr + Math.floor(Math.random() * 12) - 6)),
       enemyWr,
+      teamPr: 4 + Math.floor(Math.random() * 12),
+      enemyPr: 4 + Math.floor(Math.random() * 12),
       streak,
       lastPlayed,
       reworked: isReworked,
       isNew: isNew,
-      isBest: false, // set after loop
+      isBest: false,
       agents: [
-        { name: mainAgent, wr: Math.min(80, wr + 2 + Math.floor(Math.random() * 10)), kd: +(0.8 + Math.random() * 0.9).toFixed(1) },
-        { name: secAgent, wr: Math.max(22, wr - 3 + Math.floor(Math.random() * 8)), kd: +(0.6 + Math.random() * 0.7).toFixed(1) },
-        { name: thirdAgent, wr: Math.max(18, wr - 8 + Math.floor(Math.random() * 8)), kd: +(0.5 + Math.random() * 0.6).toFixed(1) }
+        { name: mainAgent, wr: Math.min(80, wr + 2 + Math.floor(Math.random() * 10)), kd: +(kdBase + 0.2 + Math.random() * 0.4).toFixed(1) },
+        { name: secAgent, wr: Math.max(22, wr - 3 + Math.floor(Math.random() * 8)), kd: +(kdBase + Math.random() * 0.3).toFixed(1) },
+        { name: thirdAgent, wr: Math.max(18, wr - 8 + Math.floor(Math.random() * 8)), kd: +(kdBase - 0.1 + Math.random() * 0.3).toFixed(1) }
       ]
     };
   });
