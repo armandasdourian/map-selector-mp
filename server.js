@@ -54,39 +54,68 @@ function generatePlayerStats() {
   const secAgent = inits[Math.floor(Math.random() * inits.length)];
   const thirdAgent = shuffle([...controllers, ...sentinels])[0];
 
-  const comfort = shuffle([...MAPS]).slice(0, 3 + Math.floor(Math.random() * 2));
+  // Create varied scenarios that produce decision tension
+  const comfortMaps = shuffle([...MAPS]).slice(0, 3 + Math.floor(Math.random() * 2));
+  const rustyMaps = shuffle(MAPS.filter(m => !comfortMaps.includes(m))).slice(0, 2);
   const stats = {};
 
+  // Find the best map for "YOUR BEST MAP" badge
+  let bestWr = 0, bestMap = '';
+
   MAPS.forEach(map => {
-    const isComfort = comfort.includes(map);
+    const isComfort = comfortMaps.includes(map);
+    const isRusty = rustyMaps.includes(map);
     const isNew = map === 'Corrode';
     const isReworked = map === 'Breeze';
 
-    const wr = isNew ? 30 + Math.floor(Math.random() * 15)
-      : isComfort ? 52 + Math.floor(Math.random() * 14)
-      : 34 + Math.floor(Math.random() * 18);
-    const games = isNew ? 5 + Math.floor(Math.random() * 15)
-      : isComfort ? 60 + Math.floor(Math.random() * 100)
-      : 15 + Math.floor(Math.random() * 50);
+    const wr = isNew ? 28 + Math.floor(Math.random() * 16)
+      : isComfort ? 53 + Math.floor(Math.random() * 15)
+      : 32 + Math.floor(Math.random() * 20);
+    const games = isNew ? 3 + Math.floor(Math.random() * 12)
+      : isComfort ? 80 + Math.floor(Math.random() * 100)
+      : isRusty ? 30 + Math.floor(Math.random() * 40)
+      : 12 + Math.floor(Math.random() * 45);
+
+    // Last played: comfort maps recent, rusty maps old, others varied
+    const lastPlayed = isNew ? Math.floor(Math.random() * 3)
+      : isComfort ? Math.floor(Math.random() * 5)
+      : isRusty ? 14 + Math.floor(Math.random() * 30)
+      : 1 + Math.floor(Math.random() * 18);
+
+    // Streaks: comfort maps can have win streaks, weak maps can have loss streaks
+    let streak = 0;
+    if (isComfort && Math.random() > 0.5) streak = 2 + Math.floor(Math.random() * 5);
+    else if (!isComfort && wr < 42 && Math.random() > 0.6) streak = -(1 + Math.floor(Math.random() * 3));
+
+    // Enemy WR: create some maps where enemy is strong (ban targets)
+    // and some where enemy is weak (safe picks)
+    const enemyWr = isComfort ? 44 + Math.floor(Math.random() * 10)
+      : Math.random() > 0.6 ? 50 + Math.floor(Math.random() * 10) // enemy strong
+      : 40 + Math.floor(Math.random() * 12);
+
+    if (wr > bestWr) { bestWr = wr; bestMap = map; }
 
     stats[map] = {
       wr,
       games,
-      teamWr: Math.max(30, Math.min(70, wr + Math.floor(Math.random() * 10) - 5)),
-      enemyWr: 42 + Math.floor(Math.random() * 16),
-      teamPr: 5 + Math.floor(Math.random() * 10),
-      enemyPr: 5 + Math.floor(Math.random() * 10),
-      streak: isComfort && Math.random() > 0.7 ? 3 + Math.floor(Math.random() * 5) : 0,
-      recent: Math.floor(Math.random() * 20),
+      teamWr: Math.max(28, Math.min(72, wr + Math.floor(Math.random() * 12) - 6)),
+      enemyWr,
+      streak,
+      lastPlayed,
       reworked: isReworked,
       isNew: isNew,
+      isBest: false, // set after loop
       agents: [
-        { name: mainAgent, wr: Math.min(78, wr + 3 + Math.floor(Math.random() * 8)), kd: +(0.8 + Math.random() * 0.8).toFixed(1) },
-        { name: secAgent, wr: Math.max(25, wr - 2 + Math.floor(Math.random() * 6)), kd: +(0.7 + Math.random() * 0.6).toFixed(1) },
-        { name: thirdAgent, wr: Math.max(20, wr - 6 + Math.floor(Math.random() * 6)), kd: +(0.6 + Math.random() * 0.5).toFixed(1) }
+        { name: mainAgent, wr: Math.min(80, wr + 2 + Math.floor(Math.random() * 10)), kd: +(0.8 + Math.random() * 0.9).toFixed(1) },
+        { name: secAgent, wr: Math.max(22, wr - 3 + Math.floor(Math.random() * 8)), kd: +(0.6 + Math.random() * 0.7).toFixed(1) },
+        { name: thirdAgent, wr: Math.max(18, wr - 8 + Math.floor(Math.random() * 8)), kd: +(0.5 + Math.random() * 0.6).toFixed(1) }
       ]
     };
   });
+
+  // Mark the best map
+  if (bestMap && stats[bestMap]) stats[bestMap].isBest = true;
+
   return stats;
 }
 

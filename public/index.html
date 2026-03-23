@@ -163,33 +163,35 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .ban-who.bta{color:var(--teal);background:#17dec510;border:1px solid var(--teal-dim)}
 .ban-who.btb{color:var(--red);background:#ff465510;border:1px solid var(--red-dim)}
 
-/* CARD STATS — VALORANT-STYLE */
-.mi .wr-big{position:absolute;top:8px;right:8px;z-index:3;display:flex;align-items:baseline;gap:2px;padding:4px 10px;background:#000a;backdrop-filter:blur(6px);border-radius:3px;border:1px solid #ffffff15}
-.mi .wr-num{font-family:var(--fd);font-size:22px;font-weight:900;letter-spacing:-.5px}
-.mi .wr-pct{font-size:10px;font-weight:700;opacity:.7}
-.mi .wr-g{position:absolute;top:8px;left:8px;z-index:3;padding:3px 8px;background:#000a;backdrop-filter:blur(6px);border-radius:3px;font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:.5px;border:1px solid #ffffff10}
-.ms{padding:8px 12px 4px}
-.ms-teams{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ms-team{padding:6px 8px;background:var(--darkest);border-radius:3px;border:1px solid #ffffff06}
-.ms-team-label{font-family:var(--fl);font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
-.ms-team.yours .ms-team-label{color:var(--teal)}
-.ms-team.enemy .ms-team-label{color:var(--red)}
-.ms-team-wr{font-family:var(--fd);font-size:18px;font-weight:900;letter-spacing:-.5px}
-.ms-team-bar{height:3px;background:#ffffff08;border-radius:2px;overflow:hidden;margin-top:4px}
-.ms-team-fill{height:100%;border-radius:2px;transition:width .4s var(--ease)}
-.ma{padding:4px 12px 6px}
+/* CARD STATS — GAME UI */
+.mi .s-wr{position:absolute;bottom:28px;right:10px;z-index:3;display:flex;align-items:baseline;gap:1px;text-shadow:0 2px 12px #000,0 0 4px #000}
+.mi .s-wr-n{font-family:var(--fd);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1}
+.mi .s-wr-p{font-size:11px;font-weight:700;opacity:.8}
+.mi .s-tier{position:absolute;top:8px;right:8px;z-index:3;padding:3px 10px;font-family:var(--fl);font-size:7px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:2px;backdrop-filter:blur(6px);border:1px solid}
+.mi .s-meta{position:absolute;top:8px;left:8px;z-index:3;display:flex;flex-direction:column;gap:3px}
+.mi .s-meta-tag{padding:2px 8px;font-family:var(--fl);font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:#000a;backdrop-filter:blur(4px);border-radius:2px;border:1px solid #ffffff10;color:var(--text-dim)}
+.mi .s-meta-tag.streak-w{color:var(--green);border-color:#4ade8030}
+.mi .s-meta-tag.streak-l{color:var(--red);border-color:#ff465530}
+.mi .s-meta-tag.rust{color:var(--orange);border-color:#fb923c30}
+.ms{padding:8px 10px 4px}
+.ms-row{display:flex;gap:6px}
+.ms-cell{flex:1;padding:6px 8px;background:var(--darkest);border-radius:3px;border:1px solid #ffffff06;text-align:center}
+.ms-cell-label{font-family:var(--fl);font-size:6px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.ms-cell-val{font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:-.5px;line-height:1.2}
+.ms-cell-bar{height:2px;background:#ffffff08;border-radius:1px;overflow:hidden;margin-top:4px}
+.ms-cell-fill{height:100%;border-radius:1px}
+.ma{padding:4px 10px 6px}
 .ma-row{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--darkest);border-radius:3px;border:1px solid #ffffff06}
 .ma-icon{width:24px;height:24px;border-radius:4px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:8px;font-weight:900;color:var(--text-dim);flex-shrink:0;letter-spacing:-.5px;border:1px solid #ffffff08}
 .ma-info{flex:1;min-width:0}
 .ma-name{font-size:11px;font-weight:700;color:var(--text)}
-.ma-bar{height:3px;background:#ffffff08;border-radius:2px;overflow:hidden;margin-top:3px}
-.ma-fill{height:100%;border-radius:2px}
+.ma-sub{font-size:8px;color:var(--text-mute);margin-top:1px}
 .ma-vals{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
-.ma-wr{font-family:var(--fd);font-size:13px;font-weight:900;letter-spacing:-.5px}
+.ma-wr{font-family:var(--fd);font-size:14px;font-weight:900;letter-spacing:-.5px}
 .ma-kd{font-size:8px;color:var(--text-mute);letter-spacing:.5px}
-.m-inc{display:flex;gap:6px;padding:6px 12px 10px}
-.m-it{padding:5px 10px;font-size:10px;font-weight:800;letter-spacing:.5px;border-radius:3px;border:1px solid;display:flex;align-items:center;gap:4px;background:#ffffff04}
-.m-it .m-ic{font-size:12px}
+.m-inc{display:flex;gap:6px;padding:6px 10px 10px}
+.m-it{flex:1;padding:8px 10px;font-size:9px;font-weight:800;letter-spacing:.5px;border-radius:3px;border:1px solid;display:flex;align-items:center;justify-content:center;gap:5px;background:#ffffff03;text-align:center}
+.m-it .m-iv{font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:-.5px;line-height:1}
 
 /* VOTE PROGRESS */
 .vp{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:14px 0}
@@ -317,41 +319,71 @@ function renderGame(){switch(room.system){case 'mapAvoid':return renderMapAvoid(
 // ═══ HELPERS ═══
 function nudgeBar(){var c=nl(),h=isHost();return '<div class="nl-bar"><span class="nl-label">Info Layer</span>'+NLN.map(function(n,i){return '<button class="nl-btn'+(c===i?' nl-on':'')+'" data-action="set-nudge" data-n="'+i+'" data-nl="'+i+'"'+(h?'':' disabled')+'>'+n+'</button>'}).join('')+'</div>'}
 function voteProg(k){var v=(room.state&&room.state[k])||[];return '<div class="vp">'+room.players.map(function(p){var d=v.indexOf(p.id)>=0;return '<div class="vd '+(d?'y':'n')+'">'+(d?'\u2713':'\u00B7')+' '+esc(p.name)+(p.id===myId?' (you)':'')+'</div>'}).join('')+'</div>'}
-function getNB(st){if(!st)return '';var b=[];if(st.streak>=5)b.push({t:'On Fire: '+st.streak+'W',c:'var(--orange)'});else if(st.reworked)b.push({t:'Reworked',c:'var(--teal)'});else if(st.isNew)b.push({t:'New Map',c:'var(--teal)'});else if(st.wr>=55&&st.games>=80)b.push({t:'High Win Rate',c:'var(--green)'});else if(st.wr>=55)b.push({t:'Strong Here',c:'var(--teal)'});else if(st.recent>=12)b.push({t:'Trending Up',c:'var(--green)'});else if(st.enemyWr>=53)b.push({t:'Enemy Comfort',c:'var(--red)'});else if(st.games<40)b.push({t:'Low Play Count',c:'var(--blue)'});if(!b.length)return '';return '<div class="badges">'+b.map(function(x){return '<span class="nbdg" style="background:'+x.c+'">'+x.t+'</span>'}).join('')+'</div>'}
-function getIT(st){if(!st)return '';var w=Math.min(st.wr,st.teamWr||st.wr);if(w>=52&&st.games>=80&&!st.reworked&&!st.isNew)return '';var rv,rc,sv,sc;if(st.games<20||w<=35){rv=8;rc='var(--gold)'}else if(w<=40){rv=6;rc='var(--gold)'}else if(w<=45){rv=5;rc='var(--purple)'}else if(w<=50){rv=4;rc='var(--purple)'}else{rv=3;rc='var(--blue)'}if(st.games<20||w<=37){sv=5;sc='var(--green)'}else if(w<=42){sv=4;sc='var(--teal)'}else if(w<=47){sv=3;sc='var(--teal)'}else{sv=2;sc='var(--teal)'}return '<div class="m-inc"><span class="m-it" style="color:'+rc+';border-color:'+rc+'"><span class="m-ic">\u25B2</span>+'+rv+' RR</span><span class="m-it" style="color:'+sc+';border-color:'+sc+'"><span class="m-ic">\u25C6</span>'+sv+' RR Shield</span></div>'}
+function comfortTier(g){if(g>=100)return{l:'COMFORT',c:'var(--green)',bg:'#4ade8018',bc:'#4ade8040'};if(g>=50)return{l:'FAMILIAR',c:'var(--blue)',bg:'#58b4f018',bc:'#58b4f040'};if(g>=20)return{l:'LEARNING',c:'var(--gold)',bg:'#f5c54218',bc:'#f5c54240'};return{l:'UNKNOWN',c:'var(--red)',bg:'#ff465518',bc:'#ff465540'}}
+function lastPlayedText(d){if(d<=0)return'Today';if(d===1)return'Yesterday';if(d<=7)return d+'d ago';if(d<=30)return Math.floor(d/7)+'w ago';return'1mo+ ago'}
+function getNB(st){if(!st)return '';var b=[];
+  if(st.isBest)b.push({t:'\u2605 YOUR BEST MAP',c:'var(--green)'});
+  else if(st.streak>=3)b.push({t:'\u2191 '+st.streak+' WIN STREAK',c:'var(--orange)'});
+  else if(st.streak<=-2)b.push({t:'\u2193 '+Math.abs(st.streak)+' LOSS STREAK',c:'var(--red)'});
+  else if(st.reworked)b.push({t:'\u21BB REWORKED',c:'var(--purple)'});
+  else if(st.isNew)b.push({t:'\u2606 NEW MAP',c:'var(--teal)'});
+  else if(st.wr>=55&&st.games>=80)b.push({t:'\u2713 COMFORT PICK',c:'var(--green)'});
+  else if(st.enemyWr>=53)b.push({t:'\u26A0 ENEMY STRONG HERE',c:'var(--red)'});
+  else if(st.lastPlayed>=14)b.push({t:'\u23F0 RUST WARNING',c:'var(--orange)'});
+  else if(st.games<20)b.push({t:'? LOW EXPERIENCE',c:'var(--blue)'});
+  if(!b.length)return '';return '<div class="badges">'+b.map(function(x){return '<span class="nbdg" style="background:'+x.c+'">'+x.t+'</span>'}).join('')+'</div>'}
+function getIT(st){if(!st)return '';var w=Math.min(st.wr,st.teamWr||st.wr);if(w>=52&&st.games>=80&&!st.reworked&&!st.isNew)return '';var rv,rc,sv,sc;if(st.games<20||w<=35){rv=8;rc='var(--gold)'}else if(w<=40){rv=6;rc='var(--gold)'}else if(w<=45){rv=5;rc='var(--purple)'}else if(w<=50){rv=4;rc='var(--purple)'}else{rv=3;rc='var(--blue)'}if(st.games<20||w<=37){sv=5;sc='var(--green)'}else if(w<=42){sv=4;sc='var(--teal)'}else if(w<=47){sv=3;sc='var(--teal)'}else{sv=2;sc='var(--teal)'}return '<div class="m-inc"><span class="m-it" style="color:'+rc+';border-color:'+rc+'"><div style="display:flex;flex-direction:column;align-items:center"><span class="m-iv">+'+rv+'</span><span style="font-size:7px;letter-spacing:1px;opacity:.7">RR BONUS</span></div></span><span class="m-it" style="color:'+sc+';border-color:'+sc+'"><div style="display:flex;flex-direction:column;align-items:center"><span class="m-iv">'+sv+'</span><span style="font-size:7px;letter-spacing:1px;opacity:.7">RR SHIELD</span></div></span></div>'}
 function radar(ms,sz){if(!ms)return '';var ax=[{l:'WR',v:ms.wr/100},{l:'EXP',v:Math.min(ms.games/150,1)},{l:'TEAM',v:ms.teamWr/100},{l:'AGENT',v:(ms.agents&&ms.agents[0]?ms.agents[0].wr:50)/100},{l:'FORM',v:Math.min(ms.recent/15,1)}];var cx=sz/2,cy=sz/2,r=sz/2-14,n=5;var g='',al='',d='',lb='';[.25,.5,.75,1].forEach(function(s){var p=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;p.push((cx+r*s*Math.cos(a)).toFixed(1)+','+(cy+r*s*Math.sin(a)).toFixed(1))}g+='<polygon points="'+p.join(' ')+'" fill="none" stroke="#ffffff06" stroke-width=".5"/>'});for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;al+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(a)).toFixed(1)+'" y2="'+(cy+r*Math.sin(a)).toFixed(1)+'" stroke="#ffffff06" stroke-width=".5"/>'}var pts=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=Math.max(ax[i].v,.08);pts.push((cx+r*v*Math.cos(a)).toFixed(1)+','+(cy+r*v*Math.sin(a)).toFixed(1));d+='<circle cx="'+(cx+r*v*Math.cos(a)).toFixed(1)+'" cy="'+(cy+r*v*Math.sin(a)).toFixed(1)+'" r="2" fill="var(--teal)"/>'}for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var lx=cx+(r+10)*Math.cos(a),ly=cy+(r+10)*Math.sin(a);lb+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="#5a5549" font-size="6" font-weight="700" font-family="Urbanist,sans-serif" letter-spacing=".5">'+ax[i].l+'</text>'}return '<svg viewBox="0 0 '+sz+' '+sz+'" width="'+sz+'" height="'+sz+'" style="display:block;margin:4px auto">'+g+al+'<polygon points="'+pts.join(' ')+'" fill="#17dec515" stroke="var(--teal)" stroke-width="1.5" stroke-linejoin="round"/>'+d+lb+'</svg>'}
 
 // ═══ MAP CARD ═══
 function mc(name,o){
   o=o||{};var cl='mc';if(o.sel)cl+=' sel';if(o.avoid)cl+=' avoid';if(o.banned)cl+=' banned';if(o.off)cl+=' off';
   var st=mySt(),ms=st?st[name]:null,lv=nl();
+  // Ban overlay
   var ov='';if(o.banned){var bw='';if(o.bBy){var tc=o.bT==='a'?'bta':'btb';bw='<div class="ban-who '+tc+'">'+esc(o.bBy)+'</div>'}ov='<div class="ban-ov"><div class="ban-x">\u2715</div>'+bw+'</div>'}
+  // Selection badges
   var badge='';if(o.sel)badge='<div class="chk">\u2713</div>';if(o.avoid)badge='<div class="avd">\u2715</div>';
+  // Nudge badges on image (level >= 2)
   var nb=(lv>=2&&ms&&!o.banned)?getNB(ms):'';
-  var wrBar='';if(ms&&!o.banned){var wc=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrBar='<div class="wr-bar"><div class="wr-fill" style="width:'+ms.wr+'%;background:'+wc+'"></div></div>'}
-  // Big WR overlay on image (level >= 1)
-  var wrOv='';if(lv>=1&&ms&&!o.banned){var wc2=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrOv='<div class="wr-big"><span class="wr-num" style="color:'+wc2+'">'+ms.wr+'</span><span class="wr-pct" style="color:'+wc2+'">%</span></div><div class="wr-g">'+ms.games+' GAMES</div>'}
+  // WR color bar at bottom of image
+  var wrBar='';if(lv>=1&&ms&&!o.banned){var wc=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrBar='<div class="wr-bar"><div class="wr-fill" style="width:'+ms.wr+'%;background:'+wc+'"></div></div>'}
+  // Image overlays (level >= 1): WR number, comfort tier, meta tags
+  var imgOv='';
+  if(lv>=1&&ms&&!o.banned){
+    var wc2=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';
+    // WR big number (bottom right of image)
+    imgOv+='<div class="s-wr"><span class="s-wr-n" style="color:'+wc2+'">'+ms.wr+'</span><span class="s-wr-p" style="color:'+wc2+'">%</span></div>';
+    // Comfort tier badge (top right)
+    var ct=comfortTier(ms.games);
+    imgOv+='<div class="s-tier" style="color:'+ct.c+';background:'+ct.bg+';border-color:'+ct.bc+'">'+ct.l+' \u00B7 '+ms.games+'G</div>';
+    // Meta tags: streak + last played (top left)
+    var metaTags='';
+    if(ms.streak>0)metaTags+='<div class="s-meta-tag streak-w">\u2191 '+ms.streak+'W STREAK</div>';
+    else if(ms.streak<0)metaTags+='<div class="s-meta-tag streak-l">\u2193 '+Math.abs(ms.streak)+'L STREAK</div>';
+    if(ms.lastPlayed>=14)metaTags+='<div class="s-meta-tag rust">\u23F0 '+lastPlayedText(ms.lastPlayed)+'</div>';
+    else if(lv>=1&&ms.lastPlayed!==undefined)metaTags+='<div class="s-meta-tag">'+lastPlayedText(ms.lastPlayed)+'</div>';
+    if(metaTags)imgOv+='<div class="s-meta">'+metaTags+'</div>';
+  }
   var act=o.action?' data-action="'+o.action+'" data-map="'+esc(name)+'"':'';
-  // Stats
+  // Stats panel below image (level >= 1)
   var sh='';
   if(lv>=1&&ms&&!o.banned){
     var tc1=ms.teamWr>=55?'var(--green)':ms.teamWr>=45?'var(--text)':'var(--red)';
     var tc2=ms.enemyWr>=53?'var(--red)':ms.enemyWr>=47?'var(--text)':'var(--green)';
-    sh='<div class="ms"><div class="ms-teams">'+
-      '<div class="ms-team yours"><div class="ms-team-label">Your Team</div><div class="ms-team-wr" style="color:'+tc1+'">'+ms.teamWr+'%</div><div class="ms-team-bar"><div class="ms-team-fill" style="width:'+ms.teamWr+'%;background:'+tc1+'"></div></div></div>'+
-      '<div class="ms-team enemy"><div class="ms-team-label">Enemy Team</div><div class="ms-team-wr" style="color:'+tc2+'">'+ms.enemyWr+'%</div><div class="ms-team-bar"><div class="ms-team-fill" style="width:'+ms.enemyWr+'%;background:'+tc2+'"></div></div></div>'+
+    sh='<div class="ms"><div class="ms-row">'+
+      '<div class="ms-cell"><div class="ms-cell-label" style="color:var(--teal)">Your Team</div><div class="ms-cell-val" style="color:'+tc1+'">'+ms.teamWr+'%</div><div class="ms-cell-bar"><div class="ms-cell-fill" style="width:'+ms.teamWr+'%;background:'+tc1+'"></div></div></div>'+
+      '<div class="ms-cell"><div class="ms-cell-label" style="color:var(--red)">Enemy Team</div><div class="ms-cell-val" style="color:'+tc2+'">'+ms.enemyWr+'%</div><div class="ms-cell-bar"><div class="ms-cell-fill" style="width:'+ms.enemyWr+'%;background:'+tc2+'"></div></div></div>'+
     '</div></div>';
-    // Top agent only — clean and prominent
     if(ms.agents&&ms.agents[0]){var a=ms.agents[0];var ac=a.wr>=55?'var(--green)':a.wr>=45?'var(--text)':'var(--red)';
       sh+='<div class="ma"><div class="ma-row">'+
         '<div class="ma-icon">'+esc(a.name.slice(0,2).toUpperCase())+'</div>'+
-        '<div class="ma-info"><div class="ma-name">'+esc(a.name)+'</div><div class="ma-bar"><div class="ma-fill" style="width:'+a.wr+'%;background:'+ac+'"></div></div></div>'+
+        '<div class="ma-info"><div class="ma-name">'+esc(a.name)+'</div><div class="ma-sub">Best agent on this map</div></div>'+
         '<div class="ma-vals"><div class="ma-wr" style="color:'+ac+'">'+a.wr+'%</div><div class="ma-kd">'+a.kd+' KD</div></div>'+
       '</div></div>'}
   }
-  var rd=(lv>=1&&ms&&!o.banned&&o.showRadar)?'<div style="padding:2px 12px 6px">'+radar(ms,90)+'</div>':'';
+  var rd=(lv>=1&&ms&&!o.banned&&o.showRadar)?'<div style="padding:2px 10px 6px">'+radar(ms,90)+'</div>':'';
   var inc=(lv>=3&&ms&&!o.banned)?getIT(ms):'';
-  return '<div class="'+cl+'"'+act+'><div class="mi"><img src="/maps/'+encodeURIComponent(name)+'.png" alt="'+esc(name)+'" loading="lazy">'+badge+ov+nb+wrOv+'<div class="mn">'+esc(name)+'</div>'+wrBar+'</div>'+sh+rd+inc+'</div>'
+  return '<div class="'+cl+'"'+act+'><div class="mi"><img src="/maps/'+encodeURIComponent(name)+'.png" alt="'+esc(name)+'" loading="lazy">'+badge+ov+nb+imgOv+'<div class="mn">'+esc(name)+'</div>'+wrBar+'</div>'+sh+rd+inc+'</div>'
 }
 
 // ═══ MAP AVOIDANCE ═══
@@ -364,16 +396,20 @@ function renderMapAvoid(){var s=room.state,mx=s.maxAvoids||2,hv=(s.voters||[]).i
 function renderOw2Vote(){var s=room.state,opts=s.options||[],vs=s.voters||[],hv=vs.indexOf(myId)>=0,st=mySt(),lv=nl();
   var oh=opts.map(function(m){var vt=localRoulette===m,ms=st?st[m]:null;var nb=(lv>=2&&ms)?getNB(ms):'';
     var sh='';if(lv>=1&&ms){
-      var wc=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';
       var tc1=ms.teamWr>=55?'var(--green)':ms.teamWr>=45?'var(--text)':'var(--red)';
       var tc2=ms.enemyWr>=53?'var(--red)':ms.enemyWr>=47?'var(--text)':'var(--green)';
-      sh='<div class="ms"><div class="ms-teams">'+
-        '<div class="ms-team yours"><div class="ms-team-label">Your Team</div><div class="ms-team-wr" style="color:'+tc1+'">'+ms.teamWr+'%</div><div class="ms-team-bar"><div class="ms-team-fill" style="width:'+ms.teamWr+'%;background:'+tc1+'"></div></div></div>'+
-        '<div class="ms-team enemy"><div class="ms-team-label">Enemy Team</div><div class="ms-team-wr" style="color:'+tc2+'">'+ms.enemyWr+'%</div><div class="ms-team-bar"><div class="ms-team-fill" style="width:'+ms.enemyWr+'%;background:'+tc2+'"></div></div></div>'+
+      sh='<div class="ms"><div class="ms-row">'+
+        '<div class="ms-cell"><div class="ms-cell-label" style="color:var(--teal)">Your Team</div><div class="ms-cell-val" style="color:'+tc1+'">'+ms.teamWr+'%</div><div class="ms-cell-bar"><div class="ms-cell-fill" style="width:'+ms.teamWr+'%;background:'+tc1+'"></div></div></div>'+
+        '<div class="ms-cell"><div class="ms-cell-label" style="color:var(--red)">Enemy Team</div><div class="ms-cell-val" style="color:'+tc2+'">'+ms.enemyWr+'%</div><div class="ms-cell-bar"><div class="ms-cell-fill" style="width:'+ms.enemyWr+'%;background:'+tc2+'"></div></div></div>'+
       '</div></div>';
       if(ms.agents&&ms.agents[0]){var a=ms.agents[0];var ac=a.wr>=55?'var(--green)':a.wr>=45?'var(--text)':'var(--red)';
-        sh+='<div class="ma"><div class="ma-row"><div class="ma-icon">'+esc(a.name.slice(0,2).toUpperCase())+'</div><div class="ma-info"><div class="ma-name">'+esc(a.name)+'</div><div class="ma-bar"><div class="ma-fill" style="width:'+a.wr+'%;background:'+ac+'"></div></div></div><div class="ma-vals"><div class="ma-wr" style="color:'+ac+'">'+a.wr+'%</div><div class="ma-kd">'+a.kd+' KD</div></div></div></div>'}}
-    var wrOvR='';if(lv>=1&&ms){var wc3=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrOvR='<div class="wr-big"><span class="wr-num" style="color:'+wc3+'">'+ms.wr+'</span><span class="wr-pct" style="color:'+wc3+'">%</span></div><div class="wr-g">'+ms.games+' GAMES</div>'}
+        sh+='<div class="ma"><div class="ma-row"><div class="ma-icon">'+esc(a.name.slice(0,2).toUpperCase())+'</div><div class="ma-info"><div class="ma-name">'+esc(a.name)+'</div><div class="ma-sub">Best agent</div></div><div class="ma-vals"><div class="ma-wr" style="color:'+ac+'">'+a.wr+'%</div><div class="ma-kd">'+a.kd+' KD</div></div></div></div>'}}
+    // Image overlays for roulette cards
+    var wrOvR='';if(lv>=1&&ms){
+      var wc3=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';
+      var ct=comfortTier(ms.games);
+      wrOvR='<div class="s-wr"><span class="s-wr-n" style="color:'+wc3+'">'+ms.wr+'</span><span class="s-wr-p" style="color:'+wc3+'">%</span></div>'+
+        '<div class="s-tier" style="color:'+ct.c+';background:'+ct.bg+';border-color:'+ct.bc+'">'+ct.l+'</div>'}
     var inc=(lv>=3&&ms)?getIT(ms):'';
     return '<div class="rl-card '+(vt?'voted':'')+'" data-action="vote-roulette" data-map="'+esc(m)+'"><div class="mi"><img src="/maps/'+encodeURIComponent(m)+'.png" alt="'+esc(m)+'">'+nb+wrOvR+'<div class="mn" style="font-size:18px">'+esc(m)+'</div></div>'+sh+inc+'</div>'}).join('');
   var sm=hv?'<div style="font-size:13px;color:var(--green)">Vote locked! Waiting...</div>':'<div style="font-size:13px;color:var(--text-dim)">Click a map to vote</div>';
