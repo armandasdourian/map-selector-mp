@@ -1,0 +1,13 @@
+{
+  "name": "map-selector-mp",
+  "version": "1.0.0",
+  "description": "Multiplayer map selection tool for VALORANT custom matches",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.8.0"
+  }
+}
