@@ -282,7 +282,8 @@ function renderLobby(){
     // Show main agent from their stats
     var agName='';if(p.stats){var firstMap=Object.keys(p.stats)[0];if(firstMap&&p.stats[firstMap].agents)agName=p.stats[firstMap].agents[0].name}
     var c='';
-    if(h&&p.id!==myId){var ot=p.team==='a'?'b':'a';c='<div class="p-ctrls"><button class="btn btn-sm btn-ghost" data-action="set-team" data-player="'+p.id+'" data-team="'+ot+'">\u2192 '+tL(ot)+'</button>';if(!p.isCaptain)c+='<button class="btn btn-sm btn-ghost" data-action="set-captain" data-player="'+p.id+'">\u2605</button>';c+='</div>'}
+    if(im){var ot=p.team==='a'?'b':'a';c='<div class="p-ctrls"><button class="btn btn-sm btn-ghost" data-action="switch-team" data-team="'+ot+'">\u21C4 Switch to '+tL(ot)+'</button></div>'}
+    else if(h){var ot=p.team==='a'?'b':'a';c='<div class="p-ctrls"><button class="btn btn-sm btn-ghost" data-action="set-team" data-player="'+p.id+'" data-team="'+ot+'">\u2192 '+tL(ot)+'</button>';if(!p.isCaptain)c+='<button class="btn btn-sm btn-ghost" data-action="set-captain" data-player="'+p.id+'">\u2605</button>';c+='</div>'}
     return '<div class="p-row"><div class="p-av">'+ini(p.name)+'</div><span class="p-name">'+esc(p.name)+(agName?' <span style="font-size:10px;color:var(--text-dim);font-weight:400">\u00B7 '+esc(agName)+' main</span>':'')+'</span><div class="p-badges">'+b+'</div>'+c+'</div>'
   }
   var sb=Object.keys(SYS).map(function(k){return '<div class="sys-card '+(selectedSystem===k?'active':'')+'" data-action="select-system" data-system="'+k+'"><div class="sys-icon">'+SYS[k].icon+'</div><div class="sys-name">'+SYS[k].name+'</div></div>'}).join('');
@@ -442,6 +443,7 @@ document.getElementById('app').addEventListener('click',function(e){var el=e.tar
     case 'copy-code':if(navigator.clipboard&&room)navigator.clipboard.writeText(room.code);showToast('Copied!');break;
     case 'copy-link':if(navigator.clipboard&&room)navigator.clipboard.writeText(window.location.origin+'?room='+room.code);showToast('Link copied!');break;
     case 'set-team':socket.emit('set-team',{playerId:el.dataset.player,team:el.dataset.team});break;
+    case 'switch-team':socket.emit('switch-team',{team:el.dataset.team});break;
     case 'set-captain':socket.emit('set-captain',{playerId:el.dataset.player});break;
     case 'select-system':selectedSystem=el.dataset.system;render();break;
     case 'set-pool':socket.emit('update-config',{poolSize:parseInt(el.dataset.size)});break;

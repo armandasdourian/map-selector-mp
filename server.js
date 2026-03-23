@@ -252,6 +252,17 @@ io.on('connection', socket => {
     broadcast(room);
   });
 
+  socket.on('switch-team', ({ team }) => {
+    const room = rooms.get(roomCode);
+    if (!room || room.phase !== 'lobby') return;
+    const p = room.players.get(socket.id);
+    if (!p || !['a', 'b'].includes(team)) return;
+    p.team = team;
+    p.isCaptain = false;
+    if (![...room.players.values()].some(pl => pl.team === team && pl.isCaptain)) p.isCaptain = true;
+    broadcast(room);
+  });
+
   socket.on('set-captain', ({ playerId }) => {
     const room = rooms.get(roomCode);
     if (!room || room.host !== socket.id || room.phase !== 'lobby') return;
