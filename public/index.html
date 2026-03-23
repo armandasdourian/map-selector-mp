@@ -310,14 +310,14 @@ function nudgeBar(){var c=nl(),h=isHost();return '<div class="nl-bar"><span clas
 function voteProg(k){var v=(room.state&&room.state[k])||[];return '<div class="vp">'+room.players.map(function(p){var d=v.indexOf(p.id)>=0;return '<div class="vd '+(d?'y':'n')+'">'+(d?'\u2713':'\u00B7')+' '+esc(p.name)+(p.id===myId?' (you)':'')+'</div>'}).join('')+'</div>'}
 function comfortTier(g){if(g>=100)return{l:'COMFORT',c:'var(--green)',bg:'#4ade8018',bc:'#4ade8040'};if(g>=50)return{l:'FAMILIAR',c:'var(--blue)',bg:'#58b4f018',bc:'#58b4f040'};if(g>=20)return{l:'LEARNING',c:'var(--gold)',bg:'#f5c54218',bc:'#f5c54240'};return{l:'UNKNOWN',c:'var(--red)',bg:'#ff465518',bc:'#ff465540'}}
 function lastPlayedText(d){if(d<=0)return'Today';if(d===1)return'Yesterday';if(d<=7)return d+'d ago';if(d<=30)return Math.floor(d/7)+'w ago';return'1mo+ ago'}
-function getNB(st){if(!st)return '';var b=[];
+function getNB(st,pm){if(!st)return '';var b=[];
   if(st.isBest)b.push({t:'\u2605 YOUR BEST MAP',c:'var(--green)'});
   else if(st.streak>=3)b.push({t:'\u2191 '+st.streak+' WIN STREAK',c:'var(--orange)'});
   else if(st.streak<=-2)b.push({t:'\u2193 '+Math.abs(st.streak)+' LOSS STREAK',c:'var(--red)'});
   else if(st.reworked)b.push({t:'\u21BB REWORKED',c:'var(--purple)'});
   else if(st.isNew)b.push({t:'\u2606 NEW MAP',c:'var(--teal)'});
   else if(st.wr>=55&&st.games>=80)b.push({t:'\u2713 COMFORT PICK',c:'var(--green)'});
-  else if(st.enemyWr>=53)b.push({t:'\u26A0 ENEMY STRONG HERE',c:'var(--red)'});
+  else if(pm&&st.enemyWr>=53)b.push({t:'\u26A0 ENEMY STRONG HERE',c:'var(--red)'});
   else if(st.lastPlayed>=14)b.push({t:'\u23F0 RUST WARNING',c:'var(--orange)'});
   else if(st.games<20)b.push({t:'? LOW EXPERIENCE',c:'var(--blue)'});
   if(!b.length)return '';return '<div class="badges">'+b.map(function(x){return '<span class="nbdg" style="background:'+x.c+'">'+x.t+'</span>'}).join('')+'</div>'}
@@ -330,21 +330,23 @@ function mc(name,o){
   var st=mySt(),ms=st?st[name]:null,lv=nl();
   var ov='';if(o.banned){var bw='';if(o.bBy){var tc=o.bT==='a'?'bta':'btb';bw='<div class="ban-who '+tc+'">'+esc(o.bBy)+'</div>'}ov='<div class="ban-ov"><div class="ban-x">\u2715</div>'+bw+'</div>'}
   var badge='';if(o.sel)badge='<div class="chk">\u2713</div>';if(o.avoid)badge='<div class="avd">\u2715</div>';
-  var nb=(lv>=2&&ms&&!o.banned)?getNB(ms):'';
+  var nb=(lv>=2&&ms&&!o.banned)?getNB(ms,o.postMatch):'';
   var wrBar='';if(lv>=1&&ms&&!o.banned){var wc=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrBar='<div class="wr-bar"><div class="wr-fill" style="width:'+ms.wr+'%;background:'+wc+'"></div></div>'}
   var act=o.action?' data-action="'+o.action+'" data-map="'+esc(name)+'"':'';
-  // Stats below image
+  // Stats below image — o.postMatch controls whether enemy data shows
   var sh='';
   if(lv>=1&&ms&&!o.banned){
     var wC=ms.wr>=55?'hi':ms.wr<45?'lo':'';
     var tC=ms.teamWr>=55?'hi':ms.teamWr<45?'lo':'';
-    var eC=ms.enemyWr>=53?'lo':ms.enemyWr<45?'hi':'';
     sh='<div class="ms">'+
       '<div class="sr"><span class="sl">Your WR</span><span class="sv '+wC+'">'+ms.wr+'%</span></div>'+
-      '<div class="sr"><span class="sl">Your Team\'s WR</span><span class="sv '+tC+'">'+ms.teamWr+'%</span></div>'+
-      '<div class="sr"><span class="sl">Enemy Team WR</span><span class="sv '+eC+'">'+ms.enemyWr+'%</span></div>'+
-      '<div class="sr"><span class="sl">Your Team PR</span><span class="sv">'+(ms.teamPr||8)+'%</span></div>'+
-      '<div class="sr"><span class="sl">Enemy PR</span><span class="sv">'+(ms.enemyPr||7)+'%</span></div>'+
+      '<div class="sr"><span class="sl">Your Team\'s WR</span><span class="sv '+tC+'">'+ms.teamWr+'%</span></div>';
+    if(o.postMatch){
+      var eC=ms.enemyWr>=53?'lo':ms.enemyWr<45?'hi':'';
+      sh+='<div class="sr"><span class="sl">Enemy Team WR</span><span class="sv '+eC+'">'+ms.enemyWr+'%</span></div>'+
+        '<div class="sr"><span class="sl">Enemy PR</span><span class="sv">'+(ms.enemyPr||7)+'%</span></div>'
+    }
+    sh+='<div class="sr"><span class="sl">Your Team PR</span><span class="sv">'+(ms.teamPr||8)+'%</span></div>'+
       '<div class="sh">Your Agents on This Map</div>'+
     '</div>';
     if(ms.agents&&ms.agents.length){var mx=ms.agents[0].wr;
@@ -369,7 +371,7 @@ function renderMapAvoid(){var s=room.state,mx=s.maxAvoids||2,hv=(s.voters||[]).i
 }
 // ═══ OW2 VOTING ═══
 function renderOw2Vote(){var s=room.state,opts=s.options||[],vs=s.voters||[],hv=vs.indexOf(myId)>=0,st=mySt(),lv=nl();
-  var oh=opts.map(function(m){var vt=localRoulette===m,ms=st?st[m]:null;var nb=(lv>=2&&ms)?getNB(ms):'';
+  var oh=opts.map(function(m){var vt=localRoulette===m,ms=st?st[m]:null;var nb=(lv>=2&&ms)?getNB(ms,true):'';
     var sh='';if(lv>=1&&ms){
       var wC=ms.wr>=55?'hi':ms.wr<45?'lo':'';
       var tC=ms.teamWr>=55?'hi':ms.teamWr<45?'lo':'';
@@ -414,7 +416,7 @@ function renderCs2Premier(){
   var allP=[];for(var i=0;i<total;i++)allP.push({team:pT(banOrder[i]),type:'ban',i:i});allP.push({type:'map'});allP.push({type:'side'});
   var seq=allP.map(function(p,idx){var cl,ic;if(p.type==='ban'){if(p.i<bi){cl='bs done t'+p.team;ic='\u2713'}else if(p.i===bi){cl='bs now t'+p.team;ic=''+(p.i+1)}else{cl='bs later';ic=''+(p.i+1)}}else if(p.type==='map'){cl='bs later bs-map';ic='\u2691'}else{cl='bs later bs-side';ic='\u2694'}var cn=idx<allP.length-1?'<div class="bc'+(p.type==='ban'&&p.i<bi?' done':'')+'"></div>':'';return '<div class="'+cl+'">'+ic+'</div>'+cn}).join('');
   var th=myTurn?'<div class="turn yours">Your Turn \u2014 Ban a Map</div>':'<div class="turn theirs">Waiting for '+esc(pN(cb)).toUpperCase()+' to ban</div>';
-  var grid=pool.map(function(m){var ban=banned.find(function(b){return b.map===m});if(ban)return mc(m,{banned:true,bBy:pN(ban.by),bT:pT(ban.by)});return mc(m,{action:myTurn?'ban-map':null,off:!myTurn,showRadar:true})}).join('');
+  var grid=pool.map(function(m){var ban=banned.find(function(b){return b.map===m});if(ban)return mc(m,{banned:true,bBy:pN(ban.by),bT:pT(ban.by),postMatch:true});return mc(m,{action:myTurn?'ban-map':null,off:!myTurn,showRadar:true,postMatch:true})}).join('');
   var rem=pool.length-banned.length;
   return '<div class="game"><div class="g-hdr"><div class="g-title">CS2 Premier</div><div class="g-sub">Ban '+(bi+1)+' of '+total+' \u00B7 '+rem+' maps remaining</div></div>'+nudgeBar()+'<div class="bseq">'+seq+'</div>'+th+'<div class="mg">'+grid+'</div></div>'
 }
