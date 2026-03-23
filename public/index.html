@@ -15,7 +15,7 @@
   --panel:#1a2332; --panel-hover:#253345;
   --text:#ece8e1; --text-dim:#8b8577;
   --gold:#f5c542; --gold-dim:#f5c54240;
-  --green:#4ade80; --purple:#a78bfa; --blue:#58b4f0;
+  --green:#4ade80; --purple:#a78bfa; --blue:#58b4f0; --orange:#fb923c;
   --font-display:'Lexend Deca',sans-serif;
   --font-label:'Urbanist',sans-serif;
   --font-body:'Figtree',sans-serif;
@@ -42,7 +42,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .btn-primary:hover{box-shadow:0 0 24px var(--red-glow);transform:translateY(-1px);}
 .btn-teal{background:var(--teal);border-color:var(--teal);color:#000;}
 .btn-teal:hover{box-shadow:0 0 24px var(--teal-glow);}
-.btn-gold{background:var(--gold);border-color:var(--gold);color:#000;}
 .btn-outline{background:transparent;border-color:#ffffff20;color:var(--text-dim);}
 .btn-outline:hover{border-color:var(--red);color:var(--text);}
 .btn-sm{padding:6px 14px;font-size:9px;letter-spacing:2px;}
@@ -70,22 +69,34 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .player-controls{display:flex;gap:4px;flex-shrink:0;}
 .system-label{font-family:var(--font-label);font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;text-align:center;}
 .system-cards{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;}
-.system-card{background:var(--panel);border:2px solid #ffffff10;padding:14px 18px;cursor:pointer;transition:all .3s;text-align:center;min-width:120px;}
+.system-card{background:var(--panel);border:2px solid #ffffff10;padding:14px 18px;cursor:pointer;transition:all .3s;text-align:center;min-width:130px;}
 .system-card:hover{border-color:var(--red-dim);transform:translateY(-2px);}
 .system-card.active{border-color:var(--red);background:linear-gradient(135deg,#ff465515,#ff465505);box-shadow:0 0 20px var(--red-glow);}
 .sys-icon{font-size:22px;margin-bottom:4px;}
 .sys-name{font-family:var(--font-display);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
 .system-detail{text-align:center;margin:12px 0 20px;padding:14px 20px;background:var(--panel);border-left:3px solid var(--red);font-size:13px;color:var(--text-dim);line-height:1.7;}
-.config-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0;}
+.config-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0;flex-wrap:wrap;}
 .config-label{font-family:var(--font-label);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
-.game-screen{max-width:1100px;margin:0 auto;padding:30px 20px;}
+.game-screen{max-width:1200px;margin:0 auto;padding:30px 20px;}
 .game-header{text-align:center;margin-bottom:20px;}
 .game-system-name{font-family:var(--font-display);font-size:24px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
 .game-status{font-family:var(--font-label);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
 .turn-banner{text-align:center;padding:12px 20px;margin-bottom:20px;font-family:var(--font-label);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
 .turn-banner.your-turn{background:linear-gradient(135deg,var(--teal-dim),#17dec510);border:1px solid var(--teal);color:var(--teal);animation:pulse 2s ease-in-out infinite;}
 .turn-banner.waiting{background:var(--panel);border:1px solid #ffffff10;color:var(--text-dim);}
-.map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
+
+/* NUDGE LAYER TOGGLE */
+.nudge-bar{display:flex;gap:5px;justify-content:center;margin:12px 0 16px;flex-wrap:wrap;}
+.nudge-btn{padding:6px 14px;font-family:var(--font-label);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:1px solid #ffffff15;background:var(--panel);color:var(--text-dim);cursor:pointer;transition:all .3s;}
+.nudge-btn:hover{border-color:#ffffff30;}
+.nudge-btn.nl-active{color:#fff;}
+.nudge-btn[data-nl="0"].nl-active{background:var(--panel);border-color:var(--text-dim);color:var(--text);}
+.nudge-btn[data-nl="1"].nl-active{background:var(--blue);border-color:var(--blue);color:#000;}
+.nudge-btn[data-nl="2"].nl-active{background:var(--teal);border-color:var(--teal);color:#000;}
+.nudge-btn[data-nl="3"].nl-active{background:var(--gold);border-color:var(--gold);color:#000;}
+
+/* MAP CARDS */
+.map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
 .map-card{background:var(--panel);border:2px solid #ffffff10;border-radius:4px;overflow:hidden;cursor:pointer;transition:all .35s cubic-bezier(.16,1,.3,1);position:relative;}
 .map-card:hover:not(.banned):not(.disabled){transform:translateY(-4px);border-color:#ffffff30;box-shadow:0 8px 24px rgba(0,0,0,.3);}
 .map-card.selected{border-color:var(--teal);box-shadow:0 0 20px var(--teal-dim);}
@@ -97,14 +108,36 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .mc-img{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--dark);}
 .mc-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s,filter .3s;display:block;}
 .map-card:hover:not(.banned):not(.disabled) .mc-img img{transform:scale(1.05);}
-.map-label{padding:8px 10px;font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
+.map-label{padding:6px 10px;font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
 .mc-check{position:absolute;top:8px;right:8px;width:24px;height:24px;background:var(--teal);color:#000;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:2;}
 .mc-avoid{position:absolute;top:8px;right:8px;width:24px;height:24px;background:var(--red);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:2;}
+.mc-badges{position:absolute;top:6px;left:6px;display:flex;flex-direction:column;gap:3px;z-index:2;}
+.mc-badge{padding:2px 7px;font-size:7px;font-weight:800;letter-spacing:1px;border-radius:2px;text-transform:uppercase;color:#000;}
 .ban-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:1;}
 .ban-x{font-size:36px;font-weight:900;color:var(--red);text-shadow:0 2px 12px rgba(255,70,85,.5);}
 .ban-by{font-family:var(--font-label);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:4px;padding:2px 8px;background:#000a;}
 .ban-by.team-a-tag{color:var(--teal);border:1px solid var(--teal-dim);}
 .ban-by.team-b-tag{color:var(--red);border:1px solid var(--red-dim);}
+
+/* STATS PANEL ON CARD */
+.mc-stats{padding:0 10px 6px;font-size:11px;color:var(--text-dim);}
+.mc-stats .sr{display:flex;justify-content:space-between;margin:1px 0;}
+.mc-stats .sv{font-weight:700;color:var(--text);}
+.mc-stats .sv.high{color:var(--green);}
+.mc-stats .sv.low{color:var(--red);}
+.mc-agents{padding:0 10px 6px;}
+.mc-agents .ag{display:flex;align-items:center;gap:6px;font-size:10px;margin:2px 0;}
+.mc-agents .ag-name{width:40px;font-weight:700;color:var(--text);}
+.mc-agents .ag-bar{flex:1;height:3px;background:#ffffff10;border-radius:2px;overflow:hidden;}
+.mc-agents .ag-fill{height:100%;border-radius:2px;}
+.mc-agents .ag-wr{width:32px;text-align:right;font-weight:700;font-size:10px;}
+.mc-agents .ag-kd{width:38px;text-align:right;color:var(--text-dim);font-size:10px;}
+.mc-nudge{padding:0 10px 4px;}
+.mc-nudge .nudge-tag{display:inline-block;padding:3px 8px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;border-radius:2px;color:#000;margin:2px 2px 0 0;}
+.mc-incentives{display:flex;gap:4px;padding:2px 10px 8px;flex-wrap:wrap;}
+.mc-inc{padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.5px;border-radius:2px;border:1px solid;}
+
+/* VOTE PROGRESS */
 .vote-progress{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0;}
 .vote-dot{display:flex;align-items:center;gap:4px;padding:4px 10px;background:var(--panel);border:1px solid #ffffff10;font-size:11px;font-weight:600;}
 .vote-dot.voted{border-color:var(--green);color:var(--green);}
@@ -149,9 +182,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
   .teams-container{grid-template-columns:1fr;}
   .home-forms{flex-direction:column;align-items:center;}
   .roulette-options{flex-direction:column;align-items:center;}
-  .map-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
-  .ban-sequence{gap:2px;}
-  .ban-step{width:22px;height:22px;font-size:8px;}
+  .map-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
 }
 </style>
 </head>
@@ -163,7 +194,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 var socket = io();
 var myId = null;
 var room = null;
-var selectedSystem = 'noAgency';
+var selectedSystem = 'mapAvoid';
 var localSet = new Set();
 var localRoulette = null;
 var submitted = false;
@@ -171,13 +202,13 @@ var submitted = false;
 var ALL = ['Ascent','Haven','Bind','Lotus','Split','Pearl','Sunset','Breeze','Corrode','Abyss','Icebox','Fracture'];
 
 var SYS = {
-  noAgency:   { name:'No Agency',           icon:'\u2014', desc:'VALORANT today. The system picks a random map. You have zero input. Press the button and see what you get.' },
-  cs2Comp:    { name:'CS2 Competitive',      icon:'\u2610', desc:'Each player selects which maps they\'re willing to queue for. The system matches from the most popular overlap. More maps selected = faster match.' },
-  mapAvoid:   { name:'Map Avoidance',        icon:'\u2298', desc:'Each player marks maps they want to avoid. Avoided maps are removed from the pool. A random map is selected from whatever remains.' },
-  ow2Vote:    { name:'OW2 Voting',           icon:'\u25CE', desc:'Three random maps are offered to the lobby. All players vote for their favorite. Votes become weighted roulette odds \u2014 higher votes = higher chance, but never guaranteed.' },
-  curated:    { name:'Curated Selection',    icon:'\u2726', desc:'The system surfaces a smaller set of maps for the lobby. Each player selects which maps from that set they\'d play. The most-selected map wins.' },
-  cs2Premier: { name:'CS2 Premier',          icon:'\u2694', desc:'After matchmaking, team captains alternate banning maps from the pool until one remains. Strategic elimination \u2014 protect your strengths, target their weaknesses.' }
+  mapAvoid:   { name:'Map Avoidance',     icon:'\u2298', desc:'Each player marks maps they want to avoid. Avoided maps are removed from the pool. A random map is selected from whatever remains.' },
+  ow2Vote:    { name:'OW2 Voting',        icon:'\u25CE', desc:'Three random maps are offered to the lobby. All players vote for their favorite. Votes become weighted roulette odds \u2014 higher votes = higher chance, but never guaranteed.' },
+  curated:    { name:'Curated Selection', icon:'\u2726', desc:'The system surfaces a smaller set of maps for the lobby. Each player selects which maps from that set they\'d play. The most-selected map wins.' },
+  cs2Premier: { name:'CS2 Premier',       icon:'\u2694', desc:'Team captains alternate banning maps from the pool until one remains. Strategic elimination \u2014 protect your strengths, target their weaknesses.' }
 };
+
+var NL_NAMES = ['Base','+ Stats','+ Nudges','+ Incentives'];
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function me(){return room&&room.players.find(function(p){return p.id===myId;});}
@@ -187,6 +218,8 @@ function pTeam(id){var p=room&&room.players.find(function(p){return p.id===id;})
 function teamLabel(t){return t==='a'?'Team A':'Team B';}
 function teamColor(t){return t==='a'?'var(--teal)':'var(--red)';}
 function initials(n){return n.slice(0,2).toUpperCase();}
+function myStats(){var m=me();return m?m.stats:null;}
+function nl(){return(room&&room.config&&room.config.nudgeLevel)||0;}
 
 function showToast(msg){
   var t=document.getElementById('toast');
@@ -228,7 +261,6 @@ function renderLobby(){
   var teamA=room.players.filter(function(p){return p.team==='a';});
   var teamB=room.players.filter(function(p){return p.team==='b';});
   var host=isHost();
-
   function playerRow(p){
     var isMe=p.id===myId;
     var badges='';
@@ -246,31 +278,32 @@ function renderLobby(){
     return '<div class="player-row"><div class="player-avatar">'+initials(p.name)+'</div>'+
       '<span class="player-name">'+esc(p.name)+'</span><div class="player-badges">'+badges+'</div>'+ctrls+'</div>';
   }
-
   var sysBtns=Object.keys(SYS).map(function(k){
     return '<div class="system-card '+(selectedSystem===k?'active':'')+'" data-action="select-system" data-system="'+k+'">'+
       '<div class="sys-icon">'+SYS[k].icon+'</div><div class="sys-name">'+SYS[k].name+'</div></div>';
   }).join('');
-
   var config='';
   if(host){
     if(selectedSystem==='cs2Premier'){
       var ps=(room.config&&room.config.poolSize)||7;
-      config='<div class="config-row"><span class="config-label">Map Pool:</span>'+
+      config+='<div class="config-row"><span class="config-label">Map Pool:</span>'+
         [7,9,12].map(function(s){return '<button class="btn btn-sm '+(ps===s?'btn-primary':'btn-outline')+'" data-action="set-pool" data-size="'+s+'">'+s+' Maps</button>';}).join('')+'</div>';
     }
     if(selectedSystem==='mapAvoid'){
       var ma=(room.config&&room.config.maxAvoids)||2;
-      config='<div class="config-row"><span class="config-label">Avoids Per Player:</span>'+
+      config+='<div class="config-row"><span class="config-label">Avoids Per Player:</span>'+
         [1,2,3].map(function(n){return '<button class="btn btn-sm '+(ma===n?'btn-primary':'btn-outline')+'" data-action="set-avoids" data-n="'+n+'">'+n+'</button>';}).join('')+'</div>';
     }
     if(selectedSystem==='curated'){
       var cs=(room.config&&room.config.curatedSize)||5;
-      config='<div class="config-row"><span class="config-label">Curated Pool:</span>'+
+      config+='<div class="config-row"><span class="config-label">Curated Pool:</span>'+
         [3,4,5,7].map(function(n){return '<button class="btn btn-sm '+(cs===n?'btn-primary':'btn-outline')+'" data-action="set-curated" data-n="'+n+'">'+n+' Maps</button>';}).join('')+'</div>';
     }
+    // Nudge level config
+    var curNl=(room.config&&room.config.nudgeLevel)||0;
+    config+='<div class="config-row"><span class="config-label">Info Layer:</span>'+
+      NL_NAMES.map(function(name,i){return '<button class="btn btn-sm '+(curNl===i?'btn-primary':'btn-outline')+'" data-action="set-nudge" data-n="'+i+'">'+name+'</button>';}).join('')+'</div>';
   }
-
   var hostSection='';
   if(host){
     hostSection='<div style="margin-bottom:24px"><div class="system-label">SELECT SYSTEM</div>'+
@@ -281,7 +314,6 @@ function renderLobby(){
     hostSection='<div style="text-align:center;margin-top:24px"><div class="system-label">WAITING FOR HOST</div>'+
       '<div style="font-size:13px;color:var(--text-dim);animation:pulse 2s ease-in-out infinite;margin-top:8px">The host will choose a system and start the game.</div></div>';
   }
-
   return '<div class="lobby"><div class="room-header">'+
     '<div class="room-code-label">ROOM CODE</div><div class="room-code">'+room.code+'</div>'+
     '<div style="margin-top:8px;display:flex;gap:8px;justify-content:center">'+
@@ -297,8 +329,6 @@ function renderLobby(){
 
 function renderGame(){
   switch(room.system){
-    case 'noAgency':return renderNoAgency();
-    case 'cs2Comp':return renderCs2Comp();
     case 'mapAvoid':return renderMapAvoid();
     case 'ow2Vote':return renderOw2Vote();
     case 'curated':return renderCurated();
@@ -307,6 +337,54 @@ function renderGame(){
   }
 }
 
+// --- NUDGE LAYER HELPERS ---
+function getNudgeBadges(st){
+  if(!st)return '';
+  var badges=[];
+  if(st.streak>=5)badges.push({text:'On Fire: '+st.streak+'W',bg:'var(--orange)'});
+  else if(st.reworked)badges.push({text:'Reworked',bg:'var(--teal)'});
+  else if(st.isNew)badges.push({text:'New Map',bg:'var(--teal)'});
+  else if(st.wr>=55&&st.games>=80)badges.push({text:'High Win Rate',bg:'var(--green)'});
+  else if(st.wr>=55)badges.push({text:'Strong Here',bg:'var(--teal)'});
+  else if(st.recent>=12)badges.push({text:'Trending Up',bg:'var(--green)'});
+  else if(st.enemyWr>=53)badges.push({text:'Enemy Comfort',bg:'var(--red)'});
+  else if(st.games<40)badges.push({text:'Low Play Count',bg:'var(--blue)'});
+  if(!badges.length)return '';
+  return '<div class="mc-badges">'+badges.map(function(b){return '<span class="mc-badge" style="background:'+b.bg+'">'+b.text+'</span>';}).join('')+'</div>';
+}
+
+function getIncentiveTags(st){
+  if(!st)return '';
+  var wr=Math.min(st.wr,st.teamWr||st.wr);
+  if(wr>=52&&st.games>=80&&!st.reworked&&!st.isNew)return '';
+  var rrVal,rrCol,shVal,shCol;
+  if(st.games<20||wr<=35){rrVal=8;rrCol='var(--gold)';}
+  else if(wr<=40){rrVal=6;rrCol='var(--gold)';}
+  else if(wr<=45){rrVal=5;rrCol='var(--purple)';}
+  else if(wr<=50){rrVal=4;rrCol='var(--purple)';}
+  else{rrVal=3;rrCol='var(--blue)';}
+  if(st.games<20||wr<=37){shVal=5;shCol='var(--green)';}
+  else if(wr<=42){shVal=4;shCol='var(--teal)';}
+  else if(wr<=47){shVal=3;shCol='var(--teal)';}
+  else{shVal=2;shCol='var(--teal)';}
+  return '<div class="mc-incentives">'+
+    '<span class="mc-inc" style="color:'+rrCol+';border-color:'+rrCol+'">+'+rrVal+' RR</span>'+
+    '<span class="mc-inc" style="color:'+shCol+';border-color:'+shCol+'">'+shVal+' RR Shield</span></div>';
+}
+
+// --- NUDGE TOGGLE BAR (host can change live) ---
+function nudgeBar(){
+  var curNl=nl();
+  var host=isHost();
+  return '<div class="nudge-bar">'+
+    '<span style="font-size:9px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;padding:6px 0;margin-right:4px">Info Layer:</span>'+
+    NL_NAMES.map(function(name,i){
+      var cls='nudge-btn'+(curNl===i?' nl-active':'');
+      return '<button class="'+cls+'" data-action="set-nudge" data-n="'+i+'" data-nl="'+i+'"'+(host?'':' disabled')+'>'+name+'</button>';
+    }).join('')+'</div>';
+}
+
+// --- MAP CARD WITH STATS ---
 function mc(name,opts){
   opts=opts||{};
   var cls='map-card';
@@ -314,6 +392,7 @@ function mc(name,opts){
   if(opts.avoided)cls+=' avoided';
   if(opts.banned)cls+=' banned';
   if(opts.disabled)cls+=' disabled';
+
   var overlay='';
   if(opts.banned){
     var byTag='';
@@ -327,9 +406,56 @@ function mc(name,opts){
   if(opts.selected)badge='<div class="mc-check">\u2713</div>';
   if(opts.avoided)badge='<div class="mc-avoid">\u2715</div>';
   var act=opts.action?' data-action="'+opts.action+'" data-map="'+esc(name)+'"':'';
+
+  // Get player stats for this map
+  var st=myStats();
+  var ms=st?st[name]:null;
+  var level=nl();
+
+  // Nudge badges (level >= 2)
+  var nudgeBadges=(level>=2&&ms&&!opts.banned)?getNudgeBadges(ms):'';
+
+  // Stats panel (level >= 1)
+  var statsHtml='';
+  if(level>=1&&ms&&!opts.banned){
+    var wrC=ms.wr>=55?'high':ms.wr<45?'low':'';
+    var twrC=ms.teamWr>=55?'high':ms.teamWr<45?'low':'';
+    statsHtml='<div class="mc-stats">'+
+      '<div class="sr"><span>Your WR</span><span class="sv '+wrC+'">'+ms.wr+'%</span></div>'+
+      '<div class="sr"><span>Games</span><span class="sv">'+ms.games+'</span></div>'+
+      '<div class="sr"><span>Ally WR</span><span class="sv '+twrC+'">'+ms.teamWr+'%</span></div>'+
+      '<div class="sr"><span>Enemy WR</span><span class="sv '+(ms.enemyWr>=53?'low':'')+'">'+ms.enemyWr+'%</span></div>'+
+      '<div class="sr"><span>Ally PR</span><span class="sv">'+ms.teamPr+'%</span></div>'+
+      '<div class="sr"><span>Enemy PR</span><span class="sv">'+ms.enemyPr+'%</span></div>'+
+    '</div>';
+    // Agent stats
+    if(ms.agents&&ms.agents.length){
+      var maxWr=ms.agents[0].wr;
+      statsHtml+='<div class="mc-agents">'+
+        '<div style="font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;padding:0 0 2px;border-top:1px solid #ffffff08;padding-top:4px">Your Agents</div>'+
+        ms.agents.map(function(a){
+          var col=a.wr>=55?'var(--green)':a.wr>=45?'var(--text)':'var(--red)';
+          var barW=Math.round(a.wr/maxWr*100);
+          return '<div class="ag"><span class="ag-name">'+esc(a.name)+'</span>'+
+            '<div class="ag-bar"><div class="ag-fill" style="width:'+barW+'%;background:'+col+'"></div></div>'+
+            '<span class="ag-wr" style="color:'+col+'">'+a.wr+'%</span>'+
+            '<span class="ag-kd">'+a.kd+' KD</span></div>';
+        }).join('')+'</div>';
+    }
+  }
+
+  // Nudge tags (level >= 2)
+  var nudgeHtml='';
+  // already shown as badges on image
+
+  // Incentives (level >= 3)
+  var incHtml=(level>=3&&ms&&!opts.banned)?getIncentiveTags(ms):'';
+
   return '<div class="'+cls+'"'+act+'><div class="mc-img">'+
     '<img src="/maps/'+encodeURIComponent(name)+'.png" alt="'+esc(name)+'" loading="lazy">'+
-    badge+overlay+'</div><div class="map-label">'+esc(name)+'</div></div>';
+    badge+overlay+nudgeBadges+'</div>'+
+    '<div class="map-label">'+esc(name)+'</div>'+
+    statsHtml+incHtml+'</div>';
 }
 
 function voteProgress(voterKey){
@@ -340,45 +466,6 @@ function voteProgress(voterKey){
       (v?'\u2713':'\u00B7')+' '+esc(p.name)+(p.id===myId?' (you)':'')+
     '</div>';
   }).join('')+'</div>';
-}
-
-// -- NO AGENCY --
-function renderNoAgency(){
-  var host=isHost();
-  var center=host
-    ?'<button class="btn btn-lg btn-primary" data-action="roll" style="font-size:16px;padding:20px 48px">FIND MATCH</button>'+
-     '<div style="margin-top:12px;font-size:11px;color:var(--text-dim)">No map selection. No preferences. The system chooses for you.</div>'
-    :'<div style="font-size:14px;color:var(--text-dim);animation:pulse 2s ease-in-out infinite">Waiting for host to find match...</div>';
-  return '<div class="game-screen"><div class="game-header">'+
-    '<div class="game-system-name">NO AGENCY</div>'+
-    '<div class="game-status">The system picks a random map. You have zero input.</div></div>'+
-    '<div style="text-align:center;padding:40px 0">'+center+'</div>'+
-    '<div class="map-grid" style="opacity:.4">'+ALL.map(function(m){return mc(m,{disabled:true});}).join('')+'</div></div>';
-}
-
-// -- CS2 COMPETITIVE --
-function renderCs2Comp(){
-  var s=room.state;
-  var hasVoted=(s.voters||[]).indexOf(myId)>=0||submitted;
-  var grid;
-  if(hasVoted){
-    grid='<div class="map-grid" style="opacity:.5">'+ALL.map(function(m){return mc(m,{selected:localSet.has(m),disabled:true});}).join('')+'</div>';
-  }else{
-    grid='<div class="map-grid">'+ALL.map(function(m){return mc(m,{selected:localSet.has(m),action:'toggle-sel'});}).join('')+'</div>';
-  }
-  var submitArea='';
-  if(!hasVoted){
-    submitArea='<div style="text-align:center;margin-bottom:16px">'+
-      '<span style="font-size:12px;color:var(--text-dim)">Maps queued: <strong style="color:var(--teal)">'+localSet.size+'</strong></span> '+
-      '<button class="btn btn-teal" data-action="submit-vote" style="margin-left:12px"'+(localSet.size===0?' disabled':'')+'>LOCK IN</button>'+
-      '<div style="font-size:10px;color:var(--text-dim);margin-top:6px">Select the maps you\'re willing to play, then lock in. More maps = faster match.</div></div>';
-  }else{
-    submitArea='<div style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--green)">Locked in! Waiting for others...</div>';
-  }
-  return '<div class="game-screen"><div class="game-header">'+
-    '<div class="game-system-name">CS2 COMPETITIVE</div>'+
-    '<div class="game-status">Select maps to queue for \u2014 matched from party overlap</div></div>'+
-    voteProgress('voters')+submitArea+grid+'</div>';
 }
 
 // -- MAP AVOIDANCE --
@@ -404,27 +491,55 @@ function renderMapAvoid(){
   return '<div class="game-screen"><div class="game-header">'+
     '<div class="game-system-name">MAP AVOIDANCE</div>'+
     '<div class="game-status">Mark maps to avoid \u2014 random from whatever remains</div></div>'+
-    voteProgress('voters')+submitArea+grid+'</div>';
+    nudgeBar()+voteProgress('voters')+submitArea+grid+'</div>';
 }
 
 // -- OW2 VOTING --
 function renderOw2Vote(){
   var s=room.state;
   var options=s.options||[];
-  var hasVoted=(s.voters||[]).indexOf(myId)>=0;
+  var voters=s.voters||[];
+  var hasVoted=voters.indexOf(myId)>=0;
+  var st=myStats();
+  var level=nl();
   var optHtml=options.map(function(m){
     var voted=localRoulette===m;
+    var ms=st?st[m]:null;
+    var nudgeBadges=(level>=2&&ms)?getNudgeBadges(ms):'';
+    var statsHtml='';
+    if(level>=1&&ms){
+      var wrC=ms.wr>=55?'high':ms.wr<45?'low':'';
+      statsHtml='<div class="mc-stats">'+
+        '<div class="sr"><span>Your WR</span><span class="sv '+wrC+'">'+ms.wr+'%</span></div>'+
+        '<div class="sr"><span>Games</span><span class="sv">'+ms.games+'</span></div>'+
+        '<div class="sr"><span>Ally WR</span><span class="sv">'+ms.teamWr+'%</span></div>'+
+        '<div class="sr"><span>Enemy WR</span><span class="sv">'+ms.enemyWr+'%</span></div>'+
+      '</div>';
+      if(ms.agents&&ms.agents.length){
+        var maxWr=ms.agents[0].wr;
+        statsHtml+='<div class="mc-agents" style="padding:0 16px 8px">'+
+          ms.agents.map(function(a){
+            var col=a.wr>=55?'var(--green)':a.wr>=45?'var(--text)':'var(--red)';
+            return '<div class="ag"><span class="ag-name">'+esc(a.name)+'</span>'+
+              '<div class="ag-bar"><div class="ag-fill" style="width:'+Math.round(a.wr/maxWr*100)+'%;background:'+col+'"></div></div>'+
+              '<span class="ag-wr" style="color:'+col+'">'+a.wr+'%</span>'+
+              '<span class="ag-kd">'+a.kd+' KD</span></div>';
+          }).join('')+'</div>';
+      }
+    }
+    var incHtml=(level>=3&&ms)?getIncentiveTags(ms):'';
+    if(incHtml)incHtml='<div style="padding:0 16px 8px">'+incHtml+'</div>';
     return '<div class="roulette-card '+(voted?'voted':'')+'" data-action="vote-roulette" data-map="'+esc(m)+'">'+
-      '<div class="mc-img"><img src="/maps/'+encodeURIComponent(m)+'.png" alt="'+esc(m)+'"></div>'+
-      '<div class="map-label">'+esc(m)+'</div></div>';
+      '<div class="mc-img"><img src="/maps/'+encodeURIComponent(m)+'.png" alt="'+esc(m)+'">'+nudgeBadges+'</div>'+
+      '<div class="map-label">'+esc(m)+'</div>'+statsHtml+incHtml+'</div>';
   }).join('');
   var statusMsg=hasVoted
     ?'<div style="font-size:13px;color:var(--green)">Vote locked in! Waiting for others...</div>'
-    :'<div style="font-size:13px;color:var(--text-dim)">Click a map to cast your vote. Votes become weighted odds \u2014 not majority wins.</div>';
+    :'<div style="font-size:13px;color:var(--text-dim)">Click a map to cast your vote</div>';
   return '<div class="game-screen"><div class="game-header">'+
     '<div class="game-system-name">OW2 VOTING</div>'+
     '<div class="game-status">Vote on 3 options \u2014 votes become weighted roulette odds</div></div>'+
-    voteProgress('voters')+
+    nudgeBar()+voteProgress('voters')+
     '<div class="roulette-options">'+optHtml+'</div>'+
     '<div style="text-align:center;margin-top:16px">'+statusMsg+'</div></div>';
 }
@@ -452,9 +567,8 @@ function renderCurated(){
   return '<div class="game-screen"><div class="game-header">'+
     '<div class="game-system-name">CURATED SELECTION</div>'+
     '<div class="game-status">Select from a personalized set \u2014 most-selected map wins</div></div>'+
-    '<div style="text-align:center;margin-bottom:12px;padding:10px 16px;background:var(--panel);border:1px solid var(--teal-dim);display:inline-block;margin-left:auto;margin-right:auto">'+
-      '<span style="font-family:var(--font-label);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal)">CURATED FOR THIS LOBBY</span></div>'+
-    voteProgress('voters')+submitArea+grid+'</div>';
+    '<div style="text-align:center;margin-bottom:8px"><span style="font-family:var(--font-label);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);padding:6px 14px;background:var(--panel);border:1px solid var(--teal-dim);display:inline-block">CURATED FOR THIS LOBBY</span></div>'+
+    nudgeBar()+voteProgress('voters')+submitArea+grid+'</div>';
 }
 
 // -- CS2 PREMIER --
@@ -466,32 +580,27 @@ function renderCs2Premier(){
   var banIndex=s.banIndex||0;
   var currentBanner=banOrder[banIndex];
   var isMyTurn=currentBanner===myId;
-
   var seq=banOrder.map(function(id,i){
-    var team=pTeam(id);
-    var cls,icon;
+    var team=pTeam(id);var cls,icon;
     if(i<banIndex){cls='ban-step done team-'+team+'-s';icon='\u2713';}
     else if(i===banIndex){cls='ban-step active-s team-'+team+'-s';icon=String(i+1);}
     else{cls='ban-step future-s';icon=String(i+1);}
     var conn=i<banOrder.length-1?'<div class="ban-conn '+(i<banIndex?'done':'')+'"></div>':'';
     return '<div class="'+cls+'">'+icon+'</div>'+conn;
   }).join('');
-
   var turnHtml=isMyTurn
     ?'<div class="turn-banner your-turn">YOUR TURN \u2014 BAN A MAP</div>'
     :'<div class="turn-banner waiting">WAITING FOR '+esc(pName(currentBanner)).toUpperCase()+' TO BAN</div>';
-
   var grid=pool.map(function(m){
     var ban=banned.find(function(b){return b.map===m;});
     if(ban)return mc(m,{banned:true,bannedBy:pName(ban.by),bannedByTeam:pTeam(ban.by)});
     return mc(m,{action:isMyTurn?'ban-map':null,disabled:!isMyTurn});
   }).join('');
-
   var remaining=pool.length-banned.length;
   return '<div class="game-screen"><div class="game-header">'+
     '<div class="game-system-name">CS2 PREMIER</div>'+
     '<div class="game-status">Ban '+(banIndex+1)+' of '+banOrder.length+' \u00B7 '+remaining+' maps remaining</div></div>'+
-    '<div class="ban-sequence">'+seq+'</div>'+turnHtml+
+    nudgeBar()+'<div class="ban-sequence">'+seq+'</div>'+turnHtml+
     '<div class="map-grid">'+grid+'</div></div>';
 }
 
@@ -503,35 +612,15 @@ function renderResult(){
   var sysName=SYS[room.system]?SYS[room.system].name:'';
   var detail='';
 
-  if(room.system==='noAgency'){
-    detail='<div class="result-detail">No input. The system chose for you.</div>';
-  }
-
-  if((room.system==='cs2Comp'||room.system==='curated')&&s.tally){
-    var sorted=Object.entries(s.tally).sort(function(a,b){return b[1]-a[1];});
-    var maxV=sorted[0]?sorted[0][1]:1;
-    detail='<div class="result-history"><h4>Vote Tally</h4>'+
-      sorted.map(function(e){
-        var map=e[0],count=e[1];
-        var pct=Math.round(count/maxV*100);
-        var isW=map===result;var col=isW?'var(--gold)':'var(--teal)';
-        return '<div class="tally-bar-wrap"><span class="tally-name" style="'+(isW?'color:var(--gold)':'')+'">'+esc(map)+'</span>'+
-          '<div class="tally-bar"><div class="tally-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'+
-          '<span class="tally-count" style="'+(isW?'color:var(--gold)':'')+'">'+count+'</span></div>';
-      }).join('')+'</div>';
-  }
-
   if(room.system==='mapAvoid'&&s.avoidCounts){
     var avoidEntries=Object.entries(s.avoidCounts).sort(function(a,b){return b[1]-a[1];});
     var remaining=s.remaining||[];
     detail='<div class="result-history"><h4>Avoidance Summary</h4>'+
-      '<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Maps avoided \u2014 removed from pool:</div>'+
       avoidEntries.map(function(e){
-        return '<div class="history-item"><span style="color:var(--red);font-weight:700">\u2715</span> <strong>'+esc(e[0])+'</strong> <span style="color:var(--text-dim);margin-left:auto">avoided by '+e[1]+' player'+(e[1]>1?'s':'')+'</span></div>';
+        return '<div class="history-item"><span style="color:var(--red);font-weight:700">\u2715</span> <strong>'+esc(e[0])+'</strong> <span style="color:var(--text-dim);margin-left:auto">'+e[1]+' avoided</span></div>';
       }).join('')+
-      '<div style="font-size:11px;color:var(--green);margin-top:10px">'+remaining.length+' maps remained in pool. Winner selected randomly.</div></div>';
+      '<div style="font-size:11px;color:var(--green);margin-top:10px">'+remaining.length+' maps remained. Winner selected randomly.</div></div>';
   }
-
   if(room.system==='ow2Vote'&&s.weights){
     var total=Object.values(s.weights).reduce(function(a,b){return a+b;},0);
     detail='<div class="result-history"><h4>Roulette Odds</h4>'+
@@ -543,7 +632,18 @@ function renderResult(){
           '<span class="tally-count" style="'+(isW?'color:var(--gold)':'')+'">'+pct+'%</span></div>';
       }).join('')+'</div>';
   }
-
+  if(room.system==='curated'&&s.tally){
+    var sorted=Object.entries(s.tally).sort(function(a,b){return b[1]-a[1];});
+    var maxV=sorted[0]?sorted[0][1]:1;
+    detail='<div class="result-history"><h4>Vote Tally</h4>'+
+      sorted.map(function(e){
+        var map=e[0],count=e[1];var pct=Math.round(count/maxV*100);
+        var isW=map===result;var col=isW?'var(--gold)':'var(--teal)';
+        return '<div class="tally-bar-wrap"><span class="tally-name" style="'+(isW?'color:var(--gold)':'')+'">'+esc(map)+'</span>'+
+          '<div class="tally-bar"><div class="tally-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+          '<span class="tally-count" style="'+(isW?'color:var(--gold)':'')+'">'+count+'</span></div>';
+      }).join('')+'</div>';
+  }
   if(room.system==='cs2Premier'&&s.banned){
     detail='<div class="result-history"><h4>Ban History</h4>'+
       s.banned.map(function(b,i){
@@ -553,11 +653,9 @@ function renderResult(){
           '<span>banned <strong>'+esc(b.map)+'</strong></span></div>';
       }).join('')+'</div>';
   }
-
   var backBtn=host
     ?'<div style="margin-top:24px"><button class="btn btn-lg btn-outline" data-action="back-to-lobby">RETURN TO LOBBY</button></div>'
     :'<div style="margin-top:24px;font-size:12px;color:var(--text-dim)">Waiting for host to return to lobby...</div>';
-
   return '<div class="result-screen">'+
     '<div class="result-tag">MAP SELECTED \u00B7 '+sysName.toUpperCase()+'</div>'+
     '<div class="result-card"><img src="/maps/'+encodeURIComponent(result)+'.png" alt="'+esc(result)+'">'+
@@ -603,10 +701,10 @@ document.getElementById('app').addEventListener('click',function(e){
       socket.emit('update-config',{maxAvoids:parseInt(el.dataset.n)});break;
     case 'set-curated':
       socket.emit('update-config',{curatedSize:parseInt(el.dataset.n)});break;
+    case 'set-nudge':
+      socket.emit('update-config',{nudgeLevel:parseInt(el.dataset.n)});break;
     case 'start-game':
       socket.emit('start-system',{system:selectedSystem});break;
-    case 'roll':
-      socket.emit('action',{action:'roll'});break;
     case 'toggle-sel':{
       var m=el.dataset.map;
       if(localSet.has(m))localSet.delete(m);else localSet.add(m);

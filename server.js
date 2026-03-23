@@ -8,8 +8,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer);
 
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Fallback: serve index.html for root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -17,6 +15,13 @@ app.get('/', (req, res) => {
 const MAPS = [
   'Ascent','Haven','Bind','Lotus','Split','Pearl',
   'Sunset','Breeze','Corrode','Abyss','Icebox','Fracture'
+];
+
+const AGENTS = [
+  'Jett','Reyna','Raze','Phoenix','Yoru','Neon','Iso',
+  'Sova','Breach','Skye','KAY/O','Fade','Gekko',
+  'Omen','Brimstone','Astra','Viper','Harbor',
+  'Killjoy','Cypher','Sage','Chamber','Deadlock','Vyse'
 ];
 
 const rooms = new Map();
@@ -39,13 +44,54 @@ function shuffle(a) {
   return a;
 }
 
+function generatePlayerStats() {
+  const duelists = ['Jett','Reyna','Raze','Phoenix','Neon','Iso','Yoru'];
+  const inits = ['Sova','Breach','Skye','KAY/O','Fade','Gekko'];
+  const controllers = ['Omen','Brimstone','Astra','Viper','Harbor'];
+  const sentinels = ['Killjoy','Cypher','Sage','Chamber','Deadlock','Vyse'];
+
+  const mainAgent = duelists[Math.floor(Math.random() * duelists.length)];
+  const secAgent = inits[Math.floor(Math.random() * inits.length)];
+  const thirdAgent = shuffle([...controllers, ...sentinels])[0];
+
+  const comfort = shuffle([...MAPS]).slice(0, 3 + Math.floor(Math.random() * 2));
+  const stats = {};
+
+  MAPS.forEach(map => {
+    const isComfort = comfort.includes(map);
+    const isNew = map === 'Corrode';
+    const isReworked = map === 'Breeze';
+
+    const wr = isNew ? 30 + Math.floor(Math.random() * 15)
+      : isComfort ? 52 + Math.floor(Math.random() * 14)
+      : 34 + Math.floor(Math.random() * 18);
+    const games = isNew ? 5 + Math.floor(Math.random() * 15)
+      : isComfort ? 60 + Math.floor(Math.random() * 100)
+      : 15 + Math.floor(Math.random() * 50);
+
+    stats[map] = {
+      wr,
+      games,
+      teamWr: Math.max(30, Math.min(70, wr + Math.floor(Math.random() * 10) - 5)),
+      enemyWr: 42 + Math.floor(Math.random() * 16),
+      teamPr: 5 + Math.floor(Math.random() * 10),
+      enemyPr: 5 + Math.floor(Math.random() * 10),
+      streak: isComfort && Math.random() > 0.7 ? 3 + Math.floor(Math.random() * 5) : 0,
+      recent: Math.floor(Math.random() * 20),
+      reworked: isReworked,
+      isNew: isNew,
+      agents: [
+        { name: mainAgent, wr: Math.min(78, wr + 3 + Math.floor(Math.random() * 8)), kd: +(0.8 + Math.random() * 0.8).toFixed(1) },
+        { name: secAgent, wr: Math.max(25, wr - 2 + Math.floor(Math.random() * 6)), kd: +(0.7 + Math.random() * 0.6).toFixed(1) },
+        { name: thirdAgent, wr: Math.max(20, wr - 6 + Math.floor(Math.random() * 6)), kd: +(0.6 + Math.random() * 0.5).toFixed(1) }
+      ]
+    };
+  });
+  return stats;
+}
+
 function serialize(room) {
   const s = { ...room.state };
-  // Hide individual selections until resolved
-  if (room.system === 'cs2Comp' && !s.tally) {
-    s.voters = Object.keys(s.votes || {});
-    delete s.votes;
-  }
   if (room.system === 'mapAvoid' && !s.avoidCounts) {
     s.voters = Object.keys(s.avoids || {});
     delete s.avoids;
@@ -128,11 +174,11 @@ io.on('connection', socket => {
     const room = {
       code,
       host: socket.id,
-      players: new Map([[socket.id, { name, team: 'a', isCaptain: true }]]),
+      players: new Map([[socket.id, { name, team: 'a', isCaptain: true, stats: generatePlayerStats() }]]),
       system: null,
       phase: 'lobby',
       state: {},
-      config: { poolSize: 7, maxAvoids: 2, curatedSize: 5 }
+      config: { poolSize: 7, maxAvoids: 2, curatedSize: 5, nudgeLevel: 0 }
     };
     rooms.set(code, room);
     socket.join(code);
@@ -154,7 +200,7 @@ io.on('connection', socket => {
     const team = aCount <= bCount ? 'a' : 'b';
     const needsCap = ![...room.players.values()].some(p => p.team === team && p.isCaptain);
 
-    room.players.set(socket.id, { name, team, isCaptain: needsCap });
+    room.players.set(socket.id, { name, team, isCaptain: needsCap, stats: generatePlayerStats() });
     socket.join(c);
     roomCode = c;
     socket.emit('joined', { code: c, playerId: socket.id });
@@ -199,14 +245,6 @@ io.on('connection', socket => {
     room.phase = 'playing';
 
     switch (system) {
-      case 'noAgency':
-        room.state = { result: null };
-        break;
-
-      case 'cs2Comp':
-        room.state = { votes: {}, tally: null, result: null };
-        break;
-
       case 'mapAvoid': {
         const maxA = room.config.maxAvoids || 2;
         room.state = { avoids: {}, maxAvoids: maxA, avoidCounts: null, remaining: null, result: null };
@@ -273,21 +311,6 @@ io.on('connection', socket => {
     const s = room.state;
 
     switch (room.system) {
-      case 'noAgency':
-        if (socket.id !== room.host || data.action !== 'roll') return;
-        s.result = MAPS[Math.floor(Math.random() * MAPS.length)];
-        room.phase = 'result';
-        break;
-
-      case 'cs2Comp':
-        if (data.action !== 'vote' || !Array.isArray(data.maps)) return;
-        if (s.votes[socket.id]) return;
-        s.votes[socket.id] = data.maps.filter(m => MAPS.includes(m));
-        if (Object.keys(s.votes).length >= room.players.size) {
-          resolveVoteTally(s, room);
-        }
-        break;
-
       case 'mapAvoid':
         if (data.action !== 'avoid' || !Array.isArray(data.maps)) return;
         if (s.avoids[socket.id]) return;
@@ -357,19 +380,6 @@ io.on('connection', socket => {
     if (room.phase === 'playing') {
       const s = room.state;
 
-      // Vote-based systems: check if remaining players have all voted
-      if (room.system === 'cs2Comp' && !s.tally) {
-        delete s.votes[socket.id];
-        if (Object.keys(s.votes).length >= room.players.size && room.players.size > 0) {
-          resolveVoteTally(s, room);
-        }
-      }
-      if (room.system === 'curated' && !s.tally) {
-        delete s.votes[socket.id];
-        if (Object.keys(s.votes).length >= room.players.size && room.players.size > 0) {
-          resolveVoteTally(s, room);
-        }
-      }
       if (room.system === 'mapAvoid' && !s.avoidCounts) {
         delete s.avoids[socket.id];
         if (Object.keys(s.avoids).length >= room.players.size && room.players.size > 0) {
@@ -382,7 +392,12 @@ io.on('connection', socket => {
           resolveRoulette(s, room);
         }
       }
-
+      if (room.system === 'curated' && !s.tally) {
+        delete s.votes[socket.id];
+        if (Object.keys(s.votes).length >= room.players.size && room.players.size > 0) {
+          resolveVoteTally(s, room);
+        }
+      }
       if (room.system === 'cs2Premier') {
         const idx = s.banOrder.indexOf(socket.id);
         if (idx >= 0) {
