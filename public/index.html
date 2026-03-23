@@ -315,7 +315,7 @@ function nudgeBar(){var c=nl(),h=isHost();return '<div class="nl-bar"><span clas
 function voteProg(k){var v=(room.state&&room.state[k])||[];return '<div class="vp">'+room.players.map(function(p){var d=v.indexOf(p.id)>=0;return '<div class="vd '+(d?'y':'n')+'">'+(d?'\u2713':'\u00B7')+' '+esc(p.name)+(p.id===myId?' (you)':'')+'</div>'}).join('')+'</div>'}
 function comfortTier(g){if(g>=100)return{l:'COMFORT',c:'var(--green)',bg:'#4ade8018',bc:'#4ade8040'};if(g>=50)return{l:'FAMILIAR',c:'var(--blue)',bg:'#58b4f018',bc:'#58b4f040'};if(g>=20)return{l:'LEARNING',c:'var(--gold)',bg:'#f5c54218',bc:'#f5c54240'};return{l:'UNKNOWN',c:'var(--red)',bg:'#ff465518',bc:'#ff465540'}}
 function lastPlayedText(d){if(d<=0)return'Today';if(d===1)return'Yesterday';if(d<=7)return d+'d ago';if(d<=30)return Math.floor(d/7)+'w ago';return'1mo+ ago'}
-function getNB(st,pm){if(!st)return '';var b=[];
+function getNB(st,pm,lv){if(!st)return '';var b=[];
   if(st.isBest)b.push({t:'\u2605 YOUR BEST MAP',c:'var(--green)'});
   else if(st.streak>=3)b.push({t:'\u2191 '+st.streak+' WIN STREAK',c:'var(--orange)'});
   else if(st.reworked)b.push({t:'\u21BB REWORKED',c:'var(--purple)'});
@@ -324,6 +324,14 @@ function getNB(st,pm){if(!st)return '';var b=[];
   else if(pm&&st.enemyWr>=53)b.push({t:'\u26A0 ENEMY STRONG HERE',c:'var(--red)'});
   else if(st.lastPlayed>=14)b.push({t:'\u23F0 RUST WARNING',c:'var(--orange)'});
   else if(st.games<20)b.push({t:'? LOW EXPERIENCE',c:'var(--blue)'});
+  // Incentive nudges at level 3 — highlight RR value on uncomfortable maps
+  if(lv>=3){var w=Math.min(st.wr,st.teamWr||st.wr);
+    if(w<52||st.games<80||st.reworked||st.isNew){
+      if(st.games<20||w<=35)b.push({t:'\u25B2 HIGH RR GAIN',c:'var(--gold)'});
+      else if(w<=45)b.push({t:'\u25B2 RR BONUS',c:'var(--purple)'});
+      if(st.games<20||w<=37)b.push({t:'\u25C6 RR PROTECTED',c:'var(--teal)'});
+    }
+  }
   if(!b.length)return '';return '<div class="badges">'+b.map(function(x){return '<span class="nbdg" style="background:'+x.c+'">'+x.t+'</span>'}).join('')+'</div>'}
 function getIT(st){if(!st)return '';var w=Math.min(st.wr,st.teamWr||st.wr);if(w>=52&&st.games>=80&&!st.reworked&&!st.isNew)return '';var rv,rc,sv,sc;if(st.games<20||w<=35){rv=8;rc='var(--gold)'}else if(w<=40){rv=6;rc='var(--gold)'}else if(w<=45){rv=5;rc='var(--purple)'}else if(w<=50){rv=4;rc='var(--purple)'}else{rv=3;rc='var(--blue)'}if(st.games<20||w<=37){sv=5;sc='var(--green)'}else if(w<=42){sv=4;sc='var(--teal)'}else if(w<=47){sv=3;sc='var(--teal)'}else{sv=2;sc='var(--teal)'}return '<div class="m-inc"><span class="m-it" style="color:'+rc+';border-color:'+rc+'">+'+rv+' RR</span><span class="m-it" style="color:'+sc+';border-color:'+sc+'">'+sv+' RR Shield</span></div>'}
 function radar(ms,sz){if(!ms)return '';var ax=[{l:'WR',v:ms.wr/100},{l:'EXP',v:Math.min(ms.games/150,1)},{l:'TEAM',v:ms.teamWr/100},{l:'AGENT',v:(ms.agents&&ms.agents[0]?ms.agents[0].wr:50)/100},{l:'FORM',v:Math.min(ms.recent/15,1)}];var cx=sz/2,cy=sz/2,r=sz/2-14,n=5;var g='',al='',d='',lb='';[.25,.5,.75,1].forEach(function(s){var p=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;p.push((cx+r*s*Math.cos(a)).toFixed(1)+','+(cy+r*s*Math.sin(a)).toFixed(1))}g+='<polygon points="'+p.join(' ')+'" fill="none" stroke="#ffffff06" stroke-width=".5"/>'});for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;al+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(a)).toFixed(1)+'" y2="'+(cy+r*Math.sin(a)).toFixed(1)+'" stroke="#ffffff06" stroke-width=".5"/>'}var pts=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=Math.max(ax[i].v,.08);pts.push((cx+r*v*Math.cos(a)).toFixed(1)+','+(cy+r*v*Math.sin(a)).toFixed(1));d+='<circle cx="'+(cx+r*v*Math.cos(a)).toFixed(1)+'" cy="'+(cy+r*v*Math.sin(a)).toFixed(1)+'" r="2" fill="var(--teal)"/>'}for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var lx=cx+(r+10)*Math.cos(a),ly=cy+(r+10)*Math.sin(a);lb+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" fill="#5a5549" font-size="6" font-weight="700" font-family="Urbanist,sans-serif" letter-spacing=".5">'+ax[i].l+'</text>'}return '<svg viewBox="0 0 '+sz+' '+sz+'" width="'+sz+'" height="'+sz+'" style="display:block;margin:4px auto">'+g+al+'<polygon points="'+pts.join(' ')+'" fill="#17dec515" stroke="var(--teal)" stroke-width="1.5" stroke-linejoin="round"/>'+d+lb+'</svg>'}
@@ -334,7 +342,7 @@ function mc(name,o){
   var st=mySt(),ms=st?st[name]:null,lv=nl();
   var ov='';if(o.banned){var bw='';if(o.bBy){var tc=o.bT==='a'?'bta':'btb';bw='<div class="ban-who '+tc+'">'+esc(o.bBy)+'</div>'}ov='<div class="ban-ov"><div class="ban-x">\u2715</div>'+bw+'</div>'}
   var badge='';if(o.sel)badge='<div class="chk">\u2713</div>';if(o.avoid)badge='<div class="avd">\u2715</div>';
-  var nb=(lv>=2&&ms&&!o.banned)?getNB(ms,o.postMatch):'';
+  var nb=(lv>=2&&ms&&!o.banned)?getNB(ms,o.postMatch,lv):'';
   var wrBar='';if(lv>=1&&ms&&!o.banned){var wc=ms.wr>=55?'var(--green)':ms.wr>=45?'var(--gold)':'var(--red)';wrBar='<div class="wr-bar"><div class="wr-fill" style="width:'+ms.wr+'%;background:'+wc+'"></div></div>'}
   var act=o.action?' data-action="'+o.action+'" data-map="'+esc(name)+'"':'';
   // Stats — compact 2-col grid, postMatch controls enemy data
@@ -371,7 +379,7 @@ function renderMapAvoid(){var s=room.state,mx=s.maxAvoids||2,hv=(s.voters||[]).i
 }
 // ═══ OW2 VOTING ═══
 function renderOw2Vote(){var s=room.state,opts=s.options||[],vs=s.voters||[],hv=vs.indexOf(myId)>=0,st=mySt(),lv=nl();
-  var oh=opts.map(function(m){var vt=localRoulette===m,ms=st?st[m]:null;var nb=(lv>=2&&ms)?getNB(ms,true):'';
+  var oh=opts.map(function(m){var vt=localRoulette===m,ms=st?st[m]:null;var nb=(lv>=2&&ms)?getNB(ms,true,lv):'';
     var sh='';if(lv>=1&&ms){
       function wrc2(v){return v>=55?'g':v<45?'r':'w'}
       sh='<div class="ms"><div class="ms-grid">'+
